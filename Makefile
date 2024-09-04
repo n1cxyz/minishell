@@ -1,7 +1,7 @@
 NAME		= minishell
 CC			= gcc
 BIN			= bin
-SRC			= src/main.c
+SRC			= src/main.c src/token.c
 OBJS		= $(SRC:src/%c=$(BIN)/%o)
 INCS		= include
 LIBFT		= libft
