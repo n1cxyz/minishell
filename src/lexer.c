@@ -19,7 +19,7 @@ void	parse_input(t_vars *vars, char *s)
 	int	type;
 	// to check: '<', '<<', '>', '>>', '|', ', ", $, <space>, 
 	i = 0;
-	while (s[i] != '\n')
+	while (s[i] != '\n' && s[i] != '\0')
 	{
 		if (!vars->quote_status)
 			check_invalid_syntax(vars, s[i]);
@@ -34,10 +34,8 @@ void	parse_input(t_vars *vars, char *s)
 				add_token(&vars->head, new_token(ft_substr(s, i, 1), type));
 		}
 		else if (type == '$' || type == GENERAL)
-		{
 		//	sets i to one index before next delimiter
 			i = handle_word_name(vars, s, i, type);
-		}
 		// so far: '<', '<<', '>', '>>', '|', <space>, '$', <general>.
 
 		// check for beginning of quote
@@ -45,6 +43,8 @@ void	parse_input(t_vars *vars, char *s)
 			i = handle_quotes(vars, s, i, type);
 		i++;		
 	}
+	//	add END token
+	add_token(&vars->head, new_token(NULL, END));
 }
 
 int	handle_quotes(t_vars *vars, char *s, int i, int type)
@@ -139,8 +139,11 @@ void	word_to_filename(t_token *head)
 		if (head->type == LESS || head->type == GREAT || 
 		head->type == DGREAT)
 		{
-			if (head->next->type == WORD)
-				head->next->type = FILENAME;
+			if (head->next)
+			{
+				if (head->next->type == WORD)
+					head->next->type = FILENAME;
+			}
 		}
 		head = head->next;
 	}

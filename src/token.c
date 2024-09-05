@@ -75,6 +75,8 @@ void	print_token(t_token *token)
 		printf("type: EMPTY\n");
 	else if ((token->type == 263))
 		printf("type: FILENAME\n");
+	else if ((token->type == 264))
+		printf("type: END\n");
 	else
 		printf("type: %c\n", token->type);
 	if (!(token->next))
@@ -109,6 +111,8 @@ void	print_token(t_token *token)
 			printf("next: EMPTY\n");
 		else if ((token->next->type == 263))
 			printf("type: FILENAME\n");
+		else if ((token->next->type == 264))
+			printf("type: END\n");
 		else
 			printf("next: %d\n", token->next->type);
 	}	

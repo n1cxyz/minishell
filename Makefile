@@ -36,6 +36,11 @@ fclean: clean
 
 re: fclean all
 
+run:
+	./${NAME}
+
+rerun: re run
+
 test: ${NAME}
 	${VALGRIND} ./${NAME}
 

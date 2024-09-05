@@ -37,6 +37,7 @@ enum tokentype {
 	NAME,
 	Empty,
 	FILENAME,
+	END
 };
 
 typedef struct	s_token

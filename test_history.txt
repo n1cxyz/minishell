@@ -1,0 +1,8 @@
+./minishell "<>."
+./minishell "<>"
+./minishell "asd"
+./minishell "< Makefile cat | wc -w > out"
+./minishell
+./minishell "< Makefile ls -l | cat >> out"
+
+pwd
