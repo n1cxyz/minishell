@@ -1,37 +1,25 @@
-#include "mini.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dasal <dasal@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/05 09:04:09 by dasal             #+#    #+#             */
+/*   Updated: 2024/09/05 09:04:11 by dasal            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void		init_vars(t_vars *vars)
-{
-	vars->head = (t_token *)malloc(sizeof(t_token));
-	if(!vars->head)
-		return (NULL);
-	vars->head->content = NULL;
-	vars->head->type = 0;
-	vars->head->next = NULL;
-}
+#include "mini.h"
 
 int	main(void)
 {
-	char *input = {"< Makefile cat | wc -w > outfile\n"};
-	t_vars *vars;
+	char *input = {"<Makefile cat|wc -w>>outfile\n"};
+	t_vars vars;
 
-	init_vars(vars);
-	parse_input(vars, input);
-	/* char *input = {"< Makefile cat | wc -w > outfile\n"};
-	parse_input(input);
-	t_token	*head;
-
-	head = (t_token *)malloc(sizeof(t_token));
-
-	head->content = NULL;
-	head->type = 0;
-	head->next = NULL;
-
-	add_token(&head, new_token("<", LESS));
-	add_token(&head, new_token(">", GREAT));
-	add_token(&head, new_token("<<", DGREAT));
-
-	print_token_list(head);
-
-	free_token(head); */
+	init_vars(&vars);
+	parse_input(&vars, input);
+	word_to_filename(vars.head);
+	print_token_list(vars.head);
+	free_token(vars.head);	
 }

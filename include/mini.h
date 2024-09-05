@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mini.h                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dasal <dasal@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/05 09:04:28 by dasal             #+#    #+#             */
+/*   Updated: 2024/09/05 09:04:30 by dasal            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINI_H
 #define MINI_H
 
@@ -8,6 +20,8 @@
 # include <stdint.h>
 # include "libft.h"
 
+#  define BUFFER_SIZE 4096
+
 enum tokentype {
 	NEWLINE = '\n',
 	LESS = '<',
@@ -17,10 +31,12 @@ enum tokentype {
 	DQUOTE = 34,
 	DLESS = 256,
 	DGREAT = 257,
+	GENERAL, 
 	SPACE,
 	WORD,
 	NAME,
 	Empty,
+	FILENAME,
 };
 
 typedef struct	s_token
@@ -30,8 +46,11 @@ typedef struct	s_token
 	struct s_token	*next;
 }					t_token;
 
+
+
 typedef struct s_vars
 {
+	int	quote_status;
 	t_token	*head;
 }			t_vars;
 
@@ -46,9 +65,13 @@ void		print_token_list(t_token *list);
 void		init_vars(t_vars *vars);
 //			LEXING	
 int			handle_redirector(t_vars *vars, char *input, int i, int type);
+int			handle_word_name(t_vars *vars, char *input, int i, int type);
+int			handle_quotes(t_vars *vars, char *s, int i, int type);
 void		parse_input(t_vars *vars, char *input);
 int			get_char_type(int c);
-void		check_invalid_syntax(char c);
+void		check_invalid_syntax(t_vars *vars, char c);
+int			is_delimiter(char c);
+void		word_to_filename(t_token *head);
 #endif
 
 //https://en.wikipedia.org/wiki/Recursive_descent_parser
@@ -63,21 +86,26 @@ void		check_invalid_syntax(char c);
 <piped_command>		::= <simple_command> "|" <piped_command>
 
 <arguments>			::= <word> <arguments>
+					::= <word>
                 	|	ε
 
-<word>				::=	<string_literal>
+<cmd_suffix>		::=	<io_redirect>
+					|	<io_redirect> <cmd_suffix>
+					|	<WORD>
+					|	<WORD> <cmd_suffix>
+
+<redirect_list>		::=	<io_redirect> <redirect_list>
 
 <io_redirect>		::= '<'		<filename>
 					|	'>'		<filename>
 					|	'>>'	<filename>
 
-<name>				::= '$' <word>
-
-<filename>			::= <word>
+<word>				::=	<string_literal>
 */
 
 /*
-
-%token	DLESS	DGREAT	LESS	GREAT	SQUOTE	DQUOTE	PIPE
-		'<<'	'>>'	'<'		'>'		'		"		|
+%token	DLESS	DGREAT	LESS	GREAT	SQUOTE	DQUOTE	PIPE	FILENAME				NAME
+		'<<'	'>>'	'<'		'>'		'		"		|		'<' [<word>, <name>]	'$' <word>
+																'>' [<word>, <name>]
+																'>>' [<word>, <name>]
  */
