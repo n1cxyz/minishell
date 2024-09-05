@@ -14,15 +14,12 @@
 
 void	tokenize(t_vars *vars, char *s)
 {
-	//"< $Makefile cat | wc -w > outfile\n"
 	int	i;
 	int	type;
-	// to check: '<', '<<', '>', '>>', '|', ', ", $, <space>, 
 	i = 0;
 	while (s[i] != '\n' && s[i] != '\0')
 	{
-		if (!vars->quote_status)
-			check_invalid_syntax(vars, s[i]);
+		check_invalid_syntax(vars, s[i]);
 		while ((get_char_type(s[i])) == SPACE)
 			i++;
 		type = get_char_type(s[i]);
@@ -40,7 +37,7 @@ void	tokenize(t_vars *vars, char *s)
 
 		// check for beginning of quote
 		if (type == DQUOTE || type == SQUOTE)
-			i = handle_quotes(vars, s, i, type);
+			i = handle_quotes(vars, s, i + 1, type);
 		i++;		
 	}
 	//	add END token
@@ -49,39 +46,18 @@ void	tokenize(t_vars *vars, char *s)
 
 int	handle_quotes(t_vars *vars, char *s, int i, int type)
 {
-	vars->quote_status = 1;
-	//"\"<Makefile cat|wc -w\">>outfile\n"
 	int	j;
-	int	len;
-	//char *substring;
-	//"$HOME" or "HOME"
-	if (type == DQUOTE || type == SQUOTE)
-		i++;
-	else
-	{
-		free_token(vars->head);
-		perror("handle_quote wrong type");
-        exit(EXIT_FAILURE);
-	}
-	// j = starting position
 	j = i;
-	len = 0;
 	while (s[i] != '\0')
 	{
-		if (s[i] == type)
+		if (get_char_type(s[i]) == type) 
 			break;
 		i++;
-		len++;
 	}
 	if (s[i] == '\0')
-	/* {
-		free_token(vars->head);
-		perror("unclosed quote");
-        exit(EXIT_FAILURE);
-	} */
-	//substring = ft_substr(s, s + j, len);
-	add_token(&vars->head, new_token(ft_substr(s, j, len), type));
-	return (i - 1);	
+		free_error_exit(vars, "unclosed quote\n");
+	add_token(&vars->head, new_token(ft_substr(s, j, i - j), type));
+	return (i);	
 }
 
 int	handle_word_name(t_vars *vars, char *s, int i, int type)
@@ -96,8 +72,10 @@ int	handle_word_name(t_vars *vars, char *s, int i, int type)
 	// j = starting position
 	j = i;
 	len = 0;
+
 	while (!(is_delimiter(s[i])))
 	{
+		check_invalid_syntax(vars, s[i]);
 		i++;
 		len++;
 	}

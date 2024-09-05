@@ -19,7 +19,6 @@ int			is_delimiter(char c)
 	|| (c == '\n') || (c == '\0'))
 		return (1);
 	return (0);
-
 }
 
 void		init_vars(t_vars *vars)
@@ -36,42 +35,51 @@ void		init_vars(t_vars *vars)
 	vars->head->next = NULL;
 }
 
-void	check_invalid_syntax(t_vars *vars, char c)
+t_token	*new_token(char *content, int type)
 {
-	if ((c >= 1 && c <= 8) || (c >= 11 && c <= 31) || (c == '!') || (c == '#'))
-	{
-		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
-		ft_putchar_fd(c, STDERR_FILENO);
-		ft_putchar_fd('\'', STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		free_token(vars->head);
+	t_token	*new;
+
+	new = (t_token *)malloc(sizeof(t_token));
+	if (!new) {
+        perror("Failed to allocate memory");
         exit(EXIT_FAILURE);
-	}
-	if ((c >= 37 && c <= 38) || (c >= 40 && c <= 44) || (c >= 46 && c <= 47))
+    }
+	new->content = content;
+	new->type = type;
+	new->next = NULL;
+	return (new);
+}
+//		adds a token to a linked list
+void	add_token(t_token **head, t_token *new)
+{
+	t_token	*temp;
+
+	if (!head || !new)
+		return ;
+	if (!(*head))
 	{
-		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
-		ft_putchar_fd(c, STDERR_FILENO);
-		ft_putchar_fd('\'', STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		free_token(vars->head);
-        exit(EXIT_FAILURE);
+		*head = new;
+		return ;
 	}
-	if ((c >= 58 && c <= 59) || (c == '=') || (c == '@') || (c >= 91 && c <= 96))
+	temp = *head;
+	while (temp->next)
+		temp = temp->next;
+	temp->next = new;
+}
+
+void free_token(t_token *token)
+{
+	if (token != NULL)
 	{
-		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
-		ft_putchar_fd(c, STDERR_FILENO);
-		ft_putchar_fd('\'', STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		free_token(vars->head);
-        exit(EXIT_FAILURE);
+		free_token(token->next);
+		free(token->content);
+		free(token);
 	}
-	if ((c >= 125 && c <= 126) || (c == '{'))
-	{
-		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
-		ft_putchar_fd(c, STDERR_FILENO);
-		ft_putchar_fd('\'', STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		free_token(vars->head);
-        exit(EXIT_FAILURE);
-	}
+}
+
+void	free_error_exit(t_vars *vars, char *str)
+{
+	free_token(vars->head);
+	perror(str);
+    exit(EXIT_FAILURE);
 }

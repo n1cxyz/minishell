@@ -1,48 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   token.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: dasal <dasal@student.42berlin.de>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/05 09:04:16 by dasal             #+#    #+#             */
-/*   Updated: 2024/09/05 09:04:18 by dasal            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "mini.h"
-//		creates a new token
-t_token	*new_token(char *content, int type)
-{
-	t_token	*new;
-
-	new = (t_token *)malloc(sizeof(t_token));
-	if (!new) {
-        perror("Failed to allocate memory");
-        exit(EXIT_FAILURE);
-    }
-	new->content = content;
-	new->type = type;
-	new->next = NULL;
-	return (new);
-}
-//		adds a token to a linked list
-void	add_token(t_token **head, t_token *new)
-{
-	t_token	*temp;
-
-	if (!head || !new)
-		return ;
-	if (!(*head))
-	{
-		*head = new;
-		return ;
-	}
-	temp = *head;
-	while (temp->next)
-		temp = temp->next;
-	temp->next = new;
-}
 
 void	print_token(t_token *token)
 {
@@ -119,21 +75,51 @@ void	print_token(t_token *token)
 	printf("\n");
 }
 
+void	check_invalid_syntax(t_vars *vars, char c)
+{
+	if ((c >= 1 && c <= 8) || (c >= 11 && c <= 31) || (c == '!') || (c == '#'))
+	{
+		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
+		ft_putchar_fd(c, STDERR_FILENO);
+		ft_putchar_fd('\'', STDERR_FILENO);
+		ft_putchar_fd('\n', STDERR_FILENO);
+		free_token(vars->head);
+        exit(EXIT_FAILURE);
+	}
+	if ((c >= 37 && c <= 38) || (c >= 40 && c <= 44) || (c >= 46 && c <= 47))
+	{
+		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
+		ft_putchar_fd(c, STDERR_FILENO);
+		ft_putchar_fd('\'', STDERR_FILENO);
+		ft_putchar_fd('\n', STDERR_FILENO);
+		free_token(vars->head);
+        exit(EXIT_FAILURE);
+	}
+	if ((c >= 58 && c <= 59) || (c == '=') || (c == '@') || (c >= 91 && c <= 96))
+	{
+		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
+		ft_putchar_fd(c, STDERR_FILENO);
+		ft_putchar_fd('\'', STDERR_FILENO);
+		ft_putchar_fd('\n', STDERR_FILENO);
+		free_token(vars->head);
+        exit(EXIT_FAILURE);
+	}
+	if ((c >= 125 && c <= 126) || (c == '{'))
+	{
+		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
+		ft_putchar_fd(c, STDERR_FILENO);
+		ft_putchar_fd('\'', STDERR_FILENO);
+		ft_putchar_fd('\n', STDERR_FILENO);
+		free_token(vars->head);
+        exit(EXIT_FAILURE);
+	}
+}
+
 void	print_token_list(t_token *head)
 {
 	while (head)
 	{
 		print_token(head);
 		head = head->next;
-	}
-}
-
-void free_token(t_token *token)
-{
-	if (token != NULL)
-	{
-		free_token(token->next);
-		free(token->content);
-		free(token);
 	}
 }

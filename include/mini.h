@@ -59,12 +59,13 @@ typedef struct s_vars
 t_token		*new_token(char *content, int type);
 void		add_token(t_token **lst, t_token *new);
 void		free_token(t_token *token);
+void		free_error_exit(t_vars *vars, char *str);
 //			TESTING
 void		print_token(t_token *token);
 void		print_token_list(t_token *list);
 //			MAIN
 void		init_vars(t_vars *vars);
-//			LEXING	
+//			TOKENIZING
 int			handle_redirector(t_vars *vars, char *input, int i, int type);
 int			handle_word_name(t_vars *vars, char *input, int i, int type);
 int			handle_quotes(t_vars *vars, char *s, int i, int type);

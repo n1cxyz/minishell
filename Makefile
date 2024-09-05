@@ -1,7 +1,7 @@
 NAME		= minishell
 CC			= gcc
 BIN			= bin
-SRC			= src/lexer.c src/main.c src/token.c src/utils.c
+SRC			= src/debug.c src/main.c src/tokenize.c src/utils.c
 OBJS		= $(SRC:src/%c=$(BIN)/%o)
 INCS		= include
 LIBFT		= libft
