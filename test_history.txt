@@ -6,3 +6,6 @@
 ./minishell "< Makefile ls -l | cat >> out"
 
 pwd
+git add .
+git commit -m "added tester.sh"
+make fclean
