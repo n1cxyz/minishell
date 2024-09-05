@@ -12,7 +12,7 @@
 
 #include "mini.h"
 
-void	parse_input(t_vars *vars, char *s)
+void	tokenize(t_vars *vars, char *s)
 {
 	//"< $Makefile cat | wc -w > outfile\n"
 	int	i;

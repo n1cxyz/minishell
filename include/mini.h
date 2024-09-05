@@ -68,7 +68,7 @@ void		init_vars(t_vars *vars);
 int			handle_redirector(t_vars *vars, char *input, int i, int type);
 int			handle_word_name(t_vars *vars, char *input, int i, int type);
 int			handle_quotes(t_vars *vars, char *s, int i, int type);
-void		parse_input(t_vars *vars, char *input);
+void		tokenize(t_vars *vars, char *input);
 int			get_char_type(int c);
 void		check_invalid_syntax(t_vars *vars, char c);
 int			is_delimiter(char c);
@@ -79,27 +79,27 @@ void		word_to_filename(t_token *head);
 //https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html
 
 /* 
-<command_line>		::=	<simple_command> 
-					|	<piped_command>
+<pipeline>			::=	<simple_command> '|' <pipeline> 
+					|	<simple_command> 'ε'
 
-<simple_command>	::=	<word> <arguments>
+<simple_command>	::=	<io_list> <word> <cmd_suffix>
+					|	<io_list> <woprd>
+					|	<io_list>
+					|	<word>	  <cmd_suffix>
+					|	<word>
 
-<piped_command>		::= <simple_command> "|" <piped_command>
-
-<arguments>			::= <word> <arguments>
-					::= <word>
-                	|	ε
-
-<cmd_suffix>		::=	<io_redirect>
-					|	<io_redirect> <cmd_suffix>
-					|	<WORD>
+<cmd_suffix>		::=	<io_redirect> <cmd_suffix>
+					|	<io_redirect> 
 					|	<WORD> <cmd_suffix>
+					|	<WORD> 
 
 <redirect_list>		::=	<io_redirect> <redirect_list>
+					|	<io_redirect>
 
 <io_redirect>		::= '<'		<filename>
 					|	'>'		<filename>
 					|	'>>'	<filename>
+					|	'<<'	<filename>
 
 <word>				::=	<string_literal>
 */

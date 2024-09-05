@@ -20,7 +20,7 @@ int	main(int ac, char **av)
 		t_vars vars;
 
 		init_vars(&vars);
-		parse_input(&vars, av[1]);
+		tokenize(&vars, av[1]);
 		word_to_filename(vars.head);
 		print_token_list(vars.head);
 		free_token(vars.head);
