@@ -51,6 +51,7 @@ typedef struct	s_token
 
 typedef struct s_vars
 {
+	int	error_status;
 	int	dquote_status;
 	int	added_token;
 	int	quote_counter;
@@ -83,13 +84,13 @@ void		parse(t_vars *vars);
 int 		accept(t_vars *vars, int type);
 int			expect(t_vars *vars, int type);
 void		next_token(t_vars *vars);
-void		io_redirect(t_vars *vars);
+int			io_redirect(t_vars *vars);
 void		redirect_list(t_vars *vars);
 void		cmd_suffix(t_vars *vars);
 void		simple_command(t_vars *vars);
 void		pipeline(t_vars *vars);
 //			UTILS
-void		error(char *msg);
+void		error(t_vars *vars, char *msg);
 void		check_invalid_syntax(t_vars *vars, char c);
 int			is_delimiter(char c);
 int			is_space(char c);
@@ -100,10 +101,10 @@ void		word_to_filename(t_token *head);
 //https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html
 
 /* 
-<pipeline>			::=	<simple_command> '|' <pipeline> 
-					|	<simple_command> 'ε'
+<pipeline>			::=	<simple_cmd> '|' <pipeline> 
+					|	<simple_cmd> 'ε'
 
-<simple_command>	::=	<redirect_list> <word> <cmd_suffix>
+<simple_cmd>		::=	<redirect_list> <word> <cmd_suffix>
 					|	<redirect_list> <word>
 					|	<redirect_list>
 					|	<word>	  <cmd_suffix>
@@ -111,13 +112,16 @@ void		word_to_filename(t_token *head);
 
 <cmd_suffix>		::=	<io_redirect> <cmd_suffix>
 					|	<io_redirect> 
-					|	<WORD> <cmd_suffix>
-					|	<WORD> 
+					|	<word> <cmd_suffix>
+					|	<word> 
 
 <redirect_list>		::=	<io_redirect> <redirect_list>
 					|	<io_redirect>
 
 <io_redirect>		::= ['<'|'>'|'<<'|'>>'] <filename>
+
+
+
 
 %token	DLESS	DGREAT	LESS	GREAT	SQUOTE	DQUOTE	PIPE
 		'<<'	'>>'	'<'		'>'		'		"		|

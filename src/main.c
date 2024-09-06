@@ -15,8 +15,9 @@
 void	init_vars(t_vars *vars)
 {
 	//vars->quote_counter = 0;
-	vars->dquote_status = 0;
-	vars->added_token = 0;
+	//vars->dquote_status = 0;
+	//vars->added_token = 0;
+	vars->error_status = 0;
 	vars->head = (t_token *)malloc(sizeof(t_token));
 	if (!vars->head)
 	{
@@ -33,8 +34,10 @@ void	parse(t_vars *vars)
 	vars->cur = vars->head;
 	next_token(vars);
 	redirect_list(vars);
-	//io_redirect(vars);
-	expect(vars, END);
+	cmd_suffix(vars);
+	if ((expect(vars, END)) && (!(vars->error_status)))
+		printf("SUCCESS\n");
+	//print_token_list(vars->head);
 }
 
 int	main(int ac, char **av)
@@ -50,20 +53,6 @@ int	main(int ac, char **av)
 		parse(&vars);
 		free_token(vars.head);
 	}
-	//printf("SUCCESS\n");
-	/* if (ac > 1)
-	{
-		(void)av;
-		char *input = "asd$HOME";
-		t_vars vars;
-
-		init_vars(&vars);
-		tokenize(&vars, input);
-		word_to_filename(vars.head);
-		print_token_list(vars.head);
-		free_token(vars.head);
-	}
-	printf("SUCCESS\n"); */
 }
 
 //handle name in dquote

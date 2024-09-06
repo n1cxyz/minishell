@@ -73,7 +73,7 @@ void	word_to_filename(t_token *head)
 	while (head)
 	{
 		if (head->type == LESS || head->type == GREAT || 
-		head->type == DGREAT)
+		head->type == DGREAT || head->type == DLESS) // ?
 		{
 			if (head->next)
 			{

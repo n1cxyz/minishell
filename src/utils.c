@@ -31,11 +31,14 @@ int	is_space(char c)
 void	free_error_exit(t_vars *vars, char *msg)
 {
 	free_token(vars->head);
-	error(msg);
+	error(vars, msg);
     exit(EXIT_FAILURE);
 }
 
-void error(char *msg)
+void error(t_vars *vars, char *msg)
 {
 	ft_putstr_fd(msg, STDERR_FILENO);
+	ft_putstr_fd(vars->cur->content, STDERR_FILENO);
+	ft_putchar_fd(SQUOTE, STDERR_FILENO);
+	ft_putchar_fd('\n', STDERR_FILENO);
 }

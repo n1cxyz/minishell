@@ -22,7 +22,6 @@ run_test() {
 
     # Prepend the command to the top of the stack (history file)
     echo "$command" | cat - "$HISTORY_FILE" > temp && mv temp "$HISTORY_FILE"
-    echo "Test saved to history."
 }
 # Function to remove duplicate entries of a test from the stack
 remove_duplicates() {
