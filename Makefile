@@ -1,7 +1,8 @@
 NAME		= minishell
-CC			= gcc
+CC			= cc
 BIN			= bin
-SRC			= src/debug.c src/main.c src/tokenize.c src/utils.c
+SRC			= src/debug.c src/main.c src/tokenize/tokenize.c \
+			src/tokenize/handlers.c src/token.c src/utils.c
 OBJS		= $(SRC:src/%c=$(BIN)/%o)
 INCS		= include
 LIBFT		= libft
@@ -19,6 +20,7 @@ $(NAME): ${BIN} ${OBJS} | ${LIBFT}
 	${CC} ${CFLAGS} ${OBJS} ${LFLAGS} -o ${NAME}
 
 $(BIN)/%o: src/%c
+	@mkdir -p $(dir $@)
 	${CC} ${CFLAGS} -c $< ${IFLAGS} -o $@
 
 $(BIN):
@@ -44,13 +46,4 @@ rerun: re run
 test: ${NAME}
 	${VALGRIND} ./${NAME}
 
-show:
-	@printf "NAME  		: $(NAME)\n"
-	@printf "CC		: $(CC)\n"
-	@printf "CFLAGS		: $(CFLAGS)\n"
-	@printf "LFLAGS		: $(LFLAGS)\n"
-	@printf "IFLAGS		: $(IFLAGS)\n"
-	@printf "SRC		: $(SRC)\n"
-	@printf "OBJS		: $(OBJS)\n"
-
-.PHONY: $(LIBFT) re all clean fclean
+.PHONY: $(LIBFT) re all clean fclean run rerun test

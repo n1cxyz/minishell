@@ -28,14 +28,14 @@ enum tokentype {
 	GREAT = '>',
 	PIPE = '|',
 	SQUOTE = 39,
-	DQUOTE = 34,
+	DQUOTE = '-',
 	DLESS = 256,
 	DGREAT = 257,
 	GENERAL, 
 	SPACE,
 	WORD,
 	NAME,
-	Empty,
+	EMPTY,
 	FILENAME,
 	END
 };
@@ -51,7 +51,9 @@ typedef struct	s_token
 
 typedef struct s_vars
 {
-	int	quote_status;
+	int	dquote_status;
+	int	added_token;
+	int	quote_counter;
 	t_token	*head;
 }			t_vars;
 
@@ -65,14 +67,20 @@ void		print_token(t_token *token);
 void		print_token_list(t_token *list);
 //			MAIN
 void		init_vars(t_vars *vars);
-//			TOKENIZING
-int			handle_redirector(t_vars *vars, char *input, int i, int type);
-int			handle_word_name(t_vars *vars, char *input, int i, int type);
-int			handle_quotes(t_vars *vars, char *s, int i, int type);
+//			TOKENIZE
 void		tokenize(t_vars *vars, char *input);
 int			get_char_type(int c);
+//			HANDLERS
+int			handle_spaces(t_vars *vars, char *s, int i, int type);
+int			handle_redirectors(t_vars *vars, char *input, int i, int type);
+int			handle_squotes(t_vars *vars, char *s, int i, int type);
+int			handle_dquotes(t_vars *vars, char *s, int i, int type);
+int			handle_word(t_vars *vars, char *input, int i, int type);
+int			handle_name(t_vars *vars, char *input, int i, int type);
+//
 void		check_invalid_syntax(t_vars *vars, char c);
 int			is_delimiter(char c);
+int			is_space(char c);
 void		word_to_filename(t_token *head);
 #endif
 
@@ -84,7 +92,7 @@ void		word_to_filename(t_token *head);
 					|	<simple_command> 'ε'
 
 <simple_command>	::=	<io_list> <word> <cmd_suffix>
-					|	<io_list> <woprd>
+					|	<io_list> <word>
 					|	<io_list>
 					|	<word>	  <cmd_suffix>
 					|	<word>
@@ -102,12 +110,17 @@ void		word_to_filename(t_token *head);
 					|	'>>'	<filename>
 					|	'<<'	<filename>
 
-<word>				::=	<string_literal>
+%token	DLESS	DGREAT	LESS	GREAT	SQUOTE	DQUOTE	PIPE
+		'<<'	'>>'	'<'		'>'		'		"		|
+
+WORD		::=	<string_literal>
+
+NAME		::=	'$'<word> 
+
+FILENAME	::=	'<' [<word>, <name>]
+			|	'>' [<word>, <name>]
+			|	'>>' [<word>, <name>]
 */
 
-/*
-%token	DLESS	DGREAT	LESS	GREAT	SQUOTE	DQUOTE	PIPE	FILENAME				NAME
-		'<<'	'>>'	'<'		'>'		'		"		|		'<' [<word>, <name>]	'$' <word>
-																'>' [<word>, <name>]
-																'>>' [<word>, <name>]
- */
+// $ = ?
+// " = -

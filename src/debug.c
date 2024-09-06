@@ -1,37 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   debug.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dasal <dasal@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/06 11:38:26 by dasal             #+#    #+#             */
+/*   Updated: 2024/09/06 11:38:27 by dasal            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini.h"
+/* 
+enum tokentype {
+	NEWLINE = '\n',
+	LESS = '<',
+	GREAT = '>',
+	PIPE = '|',
+	SQUOTE = 39,
+	DQUOTE = 34,
+	DLESS = 256,
+	DGREAT = 257,
+	GENERAL, 
+	SPACE,
+	WORD,
+	NAME,
+	Empty,
+	FILENAME,
+	END
+}; */
 
 void	print_token(t_token *token)
 {
-	printf("content: %s\n", token->content);
-	if ((token->type == '\n'))
+	if (token->type == SPACE)
+		printf("content: <space>\n");
+	else
+			printf("content: %s\n", token->content);
+	if (token->type == '\n')
 		printf("type: NEWLINE\n");
-	else if ((token->type == '<'))
+	else if (token->type == LESS)
 		printf("type: LESS\n");
-	else if ((token->type == '>'))
+	else if (token->type == GREAT)
 		printf("type: GREAT\n");
-	else if ((token->type == '|'))
+	else if (token->type == PIPE)
 		printf("type: PIPE\n");
-	else if ((token->type == 39))
+	else if (token->type == SQUOTE)
 		printf("type: SQUOTE\n");
-	else if ((token->type == 34))
+	else if (token->type == DQUOTE)
 		printf("type: DQUOTE\n");
-	else if ((token->type == 256))
+	else if (token->type == DLESS)
 		printf("type: DLESS\n");
-	else if ((token->type == 257))
+	else if (token->type == DGREAT)
 		printf("type: DGREAT\n");
-	else if ((token->type == 258))
+	else if (token->type == GENERAL)
 		printf("type: GENERAL\n");
-	else if ((token->type == 259))
+	else if (token->type == SPACE)
 		printf("type: SPACE\n");
-	else if ((token->type == 260))
+	else if (token->type == WORD)
 		printf("type: WORD\n");
-	else if ((token->type == 261))
+	else if (token->type == NAME)
 		printf("type: NAME\n");
-	else if ((token->type == 262))
+	else if (token->type == EMPTY)
 		printf("type: EMPTY\n");
-	else if ((token->type == 263))
+	else if (token->type == FILENAME)
 		printf("type: FILENAME\n");
-	else if ((token->type == 264))
+	else if (token->type == END)
 		printf("type: END\n");
 	else
 		printf("type: %c\n", token->type);
@@ -39,35 +72,35 @@ void	print_token(t_token *token)
 		printf("next: <null>\n");
 	else
 	{
-		if ((token->next->type == '\n'))
+		if (token->next->type == '\n')
 			printf("next: NEWLINE\n");
-		else if ((token->next->type == '<'))
+		else if (token->next->type == LESS)
 			printf("next: LESS\n");
-		else if ((token->next->type == '>'))
+		else if (token->next->type == GREAT)
 			printf("next: GREAT\n");
-		else if ((token->next->type == '|'))
+		else if (token->next->type == PIPE)
 			printf("next: PIPE\n");
-		else if ((token->next->type == 39))
+		else if (token->next->type == SQUOTE)
 			printf("next: SQUOTE\n");
-		else if ((token->next->type == 34))
+		else if (token->next->type == DQUOTE)
 			printf("next: DQUOTE\n");
-		else if ((token->next->type == 256))
+		else if (token->next->type == DLESS)
 			printf("next: DLESS\n");
-		else if ((token->next->type == 257))
+		else if (token->next->type == DGREAT)
 			printf("next: DGREAT\n");
-		else if ((token->next->type == 258))
+		else if (token->next->type == GENERAL)
 			printf("next: GENERAL\n");
-		else if ((token->next->type == 259))
+		else if (token->next->type == SPACE)
 			printf("next: SPACE\n");
-		else if ((token->next->type == 260))
+		else if (token->next->type == WORD)
 			printf("next: WORD\n");
-		else if ((token->next->type == 261))
+		else if (token->next->type == NAME)
 			printf("next: NAME\n");
-		else if ((token->next->type == 262))
+		else if (token->next->type == EMPTY)
 			printf("next: EMPTY\n");
-		else if ((token->next->type == 263))
+		else if (token->next->type == FILENAME)
 			printf("type: FILENAME\n");
-		else if ((token->next->type == 264))
+		else if (token->next->type == END)
 			printf("type: END\n");
 		else
 			printf("next: %d\n", token->next->type);
