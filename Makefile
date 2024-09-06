@@ -1,8 +1,8 @@
 NAME		= minishell
 CC			= cc
 BIN			= bin
-SRC			= src/debug.c src/main.c src/tokenize/tokenize.c \
-			src/tokenize/handlers.c src/token.c src/utils.c
+SRC			= src/parser/parsing_utils.c src/parser/parsing.c src/debug.c src/main.c \
+			src/tokenize/tokenize.c src/tokenize/handlers.c src/token.c src/utils.c
 OBJS		= $(SRC:src/%c=$(BIN)/%o)
 INCS		= include
 LIBFT		= libft

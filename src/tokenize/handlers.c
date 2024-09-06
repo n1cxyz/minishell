@@ -68,7 +68,7 @@ int	handle_dquotes(t_vars *vars, char *s, int i, int type)
 
 	j = i;
 	(void)type;
-	printf(":%c \n", s[i]);
+	printf(":%c 1\n", s[i]);
 	while (s[i] != '\0')
 	{
 		if (get_char_type(s[i]) == DQUOTE)

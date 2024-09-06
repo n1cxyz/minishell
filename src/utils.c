@@ -28,9 +28,14 @@ int	is_space(char c)
 	return (0);
 }
 
-void	free_error_exit(t_vars *vars, char *str)
+void	free_error_exit(t_vars *vars, char *msg)
 {
 	free_token(vars->head);
-	perror(str);
+	error(msg);
     exit(EXIT_FAILURE);
+}
+
+void error(char *msg)
+{
+	ft_putstr_fd(msg, STDERR_FILENO);
 }

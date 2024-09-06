@@ -28,6 +28,15 @@ void	init_vars(t_vars *vars)
 	vars->head->next = NULL;
 }
 
+void	parse(t_vars *vars)
+{
+	vars->cur = vars->head;
+	next_token(vars);
+	redirect_list(vars);
+	//io_redirect(vars);
+	expect(vars, END);
+}
+
 int	main(int ac, char **av)
 {
 	if (ac > 1)
@@ -37,10 +46,11 @@ int	main(int ac, char **av)
 		init_vars(&vars);
 		tokenize(&vars, av[1]);
 		word_to_filename(vars.head);
-		print_token_list(vars.head);
+		//print_token_list(vars.head);
+		parse(&vars);
 		free_token(vars.head);
 	}
-	printf("SUCCESS\n");
+	//printf("SUCCESS\n");
 	/* if (ac > 1)
 	{
 		(void)av;

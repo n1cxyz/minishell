@@ -1,3 +1,5 @@
+./minishell "< Makefile cat | wc w > outfile"
+./minishell "< Makefile cat | wc -w > outfile"
 ./minishell "'asd'?HOME"
 ./minishell "asd asd- ?HO               m-Masda"
 ./minishell "asd asd- ?HO               -Masda"

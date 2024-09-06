@@ -22,9 +22,11 @@ void	tokenize(t_vars *vars, char *s)
 	{
 		//check_invalid_syntax(vars, s[i]);
 		type = get_char_type(s[i]);
-		if (type == SPACE)
-			i = handle_spaces(vars, s, i, type);
-		else if (type == '<' || type == '>' || type == '|')
+		while (get_char_type(s[i]) == SPACE)
+			i++;
+		/* if (type == SPACE)
+			i = handle_spaces(vars, s, i, type); */
+		if (type == '<' || type == '>' || type == '|')
 			i = handle_redirectors(vars, s, i, type);
 		else if (type == SQUOTE)
 			i = handle_squotes(vars, s, i + 1, type);
