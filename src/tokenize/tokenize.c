@@ -34,7 +34,6 @@ void	tokenize(t_vars *vars, char *s)
 			i = handle_name(vars, s, i, type);
 		else if (type == GENERAL)
 			i = handle_word(vars, s, i, type);
-		i++;		
 	}
 	add_token(&vars->head, new_token(NULL, END));
 }

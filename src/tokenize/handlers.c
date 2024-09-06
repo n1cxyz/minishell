@@ -20,7 +20,7 @@ int	handle_spaces(t_vars *vars, char *s, int i, int type)
 	while (is_space(s[i]) && s[i])
 		i++;
 	add_token(&vars->head, new_token(ft_substr(s, j, i - j), type));
-	return (i - 1);
+	return (i);
 }
 
 int	handle_redirectors(t_vars *vars, char *s, int i, int type)
@@ -33,13 +33,12 @@ int	handle_redirectors(t_vars *vars, char *s, int i, int type)
 	}
 	else if ((type == '>') && (type == get_char_type(s[i + 1])))
 	{
-		// handle '>>'
 		add_token(&vars->head, new_token(ft_substr(">>", 0, 2), DGREAT));
 		i++;
 	}
 	else
-		// handle '<' or '>' or '|'
 		add_token(&vars->head, new_token(ft_substr(s, i, 1), type));
+	i++;
 	return (i);
 }
 
@@ -53,15 +52,13 @@ int	handle_squotes(t_vars *vars, char *s, int i, int type)
 	while (s[i] != '\0')
 	{
 		if (get_char_type(s[i]) == SQUOTE)
-		{
-			//i++;
 			break;
-		}
 		i++;
 	}
 	if (s[i] == '\0')
-		free_error_exit(vars, "unclosed quote\n");
+		free_error_exit(vars, "unclosed squote\n");
 	add_token(&vars->head, new_token(ft_substr(s, j, i - j), SQUOTE));
+	i++;
 	return (i);	
 }
 
@@ -71,60 +68,55 @@ int	handle_dquotes(t_vars *vars, char *s, int i, int type)
 
 	j = i;
 	(void)type;
+	printf(":%c \n", s[i]);
 	while (s[i] != '\0')
 	{
 		if (get_char_type(s[i]) == DQUOTE)
-		{
-			//i++;
 			break;
-		}
-		if (s[i] == '?')
-			i = handle_name(vars, s, i, type);
 		i++;
 	}
 	if (s[i] == '\0')
-		free_error_exit(vars, "unclosed quote\n");
+		free_error_exit(vars, "unclosed dquote\n");
 	add_token(&vars->head, new_token(ft_substr(s, j, i - j), DQUOTE));
+	i++;
 	return (i);	
 }
 
 int	handle_word(t_vars *vars, char *s, int i, int type)
 {
+	(void)type;
 	int	j;
-	//"$HOME" or "HOME"
-	/* if (type == '?')
-		i++; */
 
-	//		{ }
 	j = i;
 	while (!(is_delimiter(s[i])))
 	{
-		//check_invalid_syntax(vars, s[i]);
 		//	bugfix for "'asd'?HOME"
 		if (s[i] == '?' && ((i - j) > 0))
 		{
 			add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
-			i = handle_name(vars, s, i, type);
-			vars->added_token = 1;
+			return (i);
 		}
 		else if (get_char_type(s[i]) == SQUOTE)
-			i = handle_squotes(vars, s, i + 1, type);
+		{
+			add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
+			return (i);
+		}
 		else if (get_char_type(s[i]) == DQUOTE)
-			i = handle_dquotes(vars, s, i + 1, type);
+		{
+			add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
+			return (i);
+		}
 		i++;
 	}
-	if (!(vars->added_token))
-		add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
-	return (i - 1);	
+	add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
+	return (i);	
 }
 
 int	handle_name(t_vars *vars, char *s, int i, int type)
 {
 	int	j;
 	(void)type;
-	//"$HOME" or "HOME"
-	/* if (type == '?')
-		i++; */
+
 	j = i;
 	while ((!(is_delimiter(s[i]))) && ((s[i] != SQUOTE) && (s[i] != DQUOTE)))
 	{
@@ -132,5 +124,5 @@ int	handle_name(t_vars *vars, char *s, int i, int type)
 		i++;
 	}
 	add_token(&vars->head, new_token(ft_substr(s, j, i - j), NAME));
-	return (i - 1);	
+	return (i);	
 }
