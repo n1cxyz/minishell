@@ -33,9 +33,10 @@ void	parse(t_vars *vars)
 {
 	vars->cur = vars->head;
 	next_token(vars);
-	redirect_list(vars);
-	cmd_suffix(vars);
-	if ((expect(vars, END)) && (!(vars->error_status)))
+	//redirect_list(vars);
+	printf("return: %d\n", cmd_suffix(vars));
+	//printf("io_redirect: %d\n", io_redirect(vars));
+	if ((expect(vars, NEWLINE)) && (!(vars->error_status)))
 		printf("SUCCESS\n");
 	//print_token_list(vars->head);
 }

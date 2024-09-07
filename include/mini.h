@@ -28,7 +28,7 @@ enum tokentype {
 	GREAT = '>',
 	PIPE = '|',
 	SQUOTE = 39,
-	DQUOTE = '-',
+	DQUOTE = 34,
 	DLESS = 256,
 	DGREAT = 257,
 	GENERAL, 
@@ -63,7 +63,7 @@ typedef struct s_vars
 t_token		*new_token(char *content, int type);
 void		add_token(t_token **lst, t_token *new);
 void		free_token(t_token *token);
-void		free_error_exit(t_vars *vars, char *str);
+void		free_error_exit(t_vars *vars, char *msg);
 //			TESTING
 void		print_token(t_token *token);
 void		print_token_list(t_token *list);
@@ -79,18 +79,19 @@ int			handle_squotes(t_vars *vars, char *s, int i, int type);
 int			handle_dquotes(t_vars *vars, char *s, int i, int type);
 int			handle_word(t_vars *vars, char *input, int i, int type);
 int			handle_name(t_vars *vars, char *input, int i, int type);
-//			PARSING
+//			PARSING_UTILS
 void		parse(t_vars *vars);
 int 		accept(t_vars *vars, int type);
 int			expect(t_vars *vars, int type);
 void		next_token(t_vars *vars);
+//			PARSING
 int			io_redirect(t_vars *vars);
-void		redirect_list(t_vars *vars);
-void		cmd_suffix(t_vars *vars);
-void		simple_command(t_vars *vars);
-void		pipeline(t_vars *vars);
+int			redirect_list(t_vars *vars);
+int			cmd_suffix(t_vars *vars);
+int			simple_command(t_vars *vars);
+int			pipeline(t_vars *vars);
 //			UTILS
-void		error(t_vars *vars, char *msg);
+void		syntax_error(t_vars *vars);
 void		check_invalid_syntax(t_vars *vars, char c);
 int			is_delimiter(char c);
 int			is_space(char c);

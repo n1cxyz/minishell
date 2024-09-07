@@ -31,14 +31,17 @@ int	is_space(char c)
 void	free_error_exit(t_vars *vars, char *msg)
 {
 	free_token(vars->head);
-	error(vars, msg);
+	ft_putstr_fd(msg, STDERR_FILENO);
     exit(EXIT_FAILURE);
 }
 
-void error(t_vars *vars, char *msg)
+void syntax_error(t_vars *vars)
 {
-	ft_putstr_fd(msg, STDERR_FILENO);
-	ft_putstr_fd(vars->cur->content, STDERR_FILENO);
+	ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+	if (vars->cur->content)
+		ft_putstr_fd(vars->cur->content, STDERR_FILENO);
+	else
+		ft_putstr_fd("newline", STDERR_FILENO);
 	ft_putchar_fd(SQUOTE, STDERR_FILENO);
 	ft_putchar_fd('\n', STDERR_FILENO);
 }
