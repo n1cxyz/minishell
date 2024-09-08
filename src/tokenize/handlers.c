@@ -56,8 +56,8 @@ int	handle_squotes(t_vars *vars, char *s, int i, int type)
 		i++;
 	}
 	if (s[i] == '\0')
-		free_error_exit(vars, "unclosed squote");
-	add_token(&vars->head, new_token(ft_substr(s, j, i - j), SQUOTE));
+		free_error_exit(vars, "unclosed squote\n");
+	add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD)); // type SQUOTE
 	i++;
 	return (i);	
 }
@@ -76,8 +76,8 @@ int	handle_dquotes(t_vars *vars, char *s, int i, int type)
 		i++;
 	}
 	if (s[i] == '\0')
-		free_error_exit(vars, "unclosed dquote");
-	add_token(&vars->head, new_token(ft_substr(s, j, i - j), DQUOTE));
+		free_error_exit(vars, "unclosed dquote\n");
+	add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));// type DQUOTE
 	i++;
 	return (i);	
 }

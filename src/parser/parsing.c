@@ -27,32 +27,41 @@ int	simple_command(t_vars *vars);
 
 int	cmd_suffix(t_vars *vars)
 {
-	if (io_redirect(vars))
+	if (!(io_redirect(vars)))
+		return (0);
+	if (vars->cur->type == LESS || vars->cur->type == GREAT ||
+	vars->cur->type == DGREAT || vars->cur->type == DLESS)
 	{
-		if (cmd_suffix(vars))
-			return (1);
+		if (!(cmd_suffix(vars)))
+			return (0);
 	}
-	if (io_redirect(vars))
+	else
+	{
+		if (!(accept(vars, WORD)))
+			return (0);
+		if (vars->cur->type == LESS || vars->cur->type == GREAT ||
+		vars->cur->type == DGREAT || vars->cur->type == DLESS || 
+		vars->cur->type == WORD)
+		{
+			if (!(cmd_suffix(vars)))
+				return (0);
+		}
 		return (1);
-	if (accept(vars, WORD) || accept(vars, NAME))
-	{
-		if (cmd_suffix(vars))
-			return (1);
 	}
-	return (0);
+	return(1);
 }
 
 int	redirect_list(t_vars *vars)
 {
 	if (!(io_redirect(vars)))
 		return (0);
-	while(vars->cur->type == LESS || vars->cur->type == GREAT ||
+	if (vars->cur->type == LESS || vars->cur->type == GREAT ||
 	vars->cur->type == DGREAT || vars->cur->type == DLESS)
 	{
-			if (!(io_redirect(vars)))
-				return (0);
+		if (!(redirect_list(vars)))
+			return (0);
 	}
-	return (1);
+	return(1);
 }
 
 int	io_redirect(t_vars *vars)
