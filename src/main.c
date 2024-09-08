@@ -33,11 +33,7 @@ void	parse(t_vars *vars)
 {
 	vars->cur = vars->head;
 	next_token(vars);
-	//printf("return: %d\n", cmd_suffix(vars));
-	//printf("return: %d\n", redirect_list(vars));
-	//printf("return: %d\n", cmd_suffix(vars));
-	//printf("io_redirect: %d\n", io_redirect(vars));
-	redirect_list(vars);
+	pipeline(vars);
 	if ((expect(vars, NEWLINE)) && (!(vars->error_status)))
 		printf("SUCCESS\n");
 	//print_token_list(vars->head);
@@ -52,7 +48,6 @@ int	main(int ac, char **av)
 		init_vars(&vars);
 		tokenize(&vars, av[1]);
 		word_to_filename(vars.head);
-		//print_token_list(vars.head);
 		parse(&vars);
 		free_token(vars.head);
 	}

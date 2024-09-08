@@ -11,115 +11,80 @@
 /* ************************************************************************** */
 
 #include "mini.h"
-
-/* int	pipeline(t_vars *vars);
-
-int	simple_command(t_vars *vars);
+/* <pipeline>			::=	<simple_cmd> '|' <pipeline> 
+					|	<simple_cmd> 'ε' */
+void	pipeline(t_vars *vars)
 {
-	if (redirect_list)
+	if ((is_redirect(vars)) || (vars->cur->type == WORD))
 	{
-		if (accept(vars, WORD))
-			cmd_suffix(vars);
-	}
-	else if (redirect_list)
-		accept(vars, WORD);
-}
-
-int	cmd_suffix(t_vars *vars)
-{
-	if (!(io_redirect(vars)))
-		return (0);
-	if (vars->cur->type == LESS || vars->cur->type == GREAT ||
-	vars->cur->type == DGREAT || vars->cur->type == DLESS)
-	{
-		if (!(cmd_suffix(vars)))
-			return (0);
-	}
-	else
-	{
-		if (!(accept(vars, WORD)))
-			return (0);
-		if (vars->cur->type == LESS || vars->cur->type == GREAT ||
-		vars->cur->type == DGREAT || vars->cur->type == DLESS || 
-		vars->cur->type == WORD)
+		simple_cmd(vars);
+		if (vars->cur->type == PIPE)
 		{
-			if (!(cmd_suffix(vars)))
-				return (0);
+			next_token(vars);
+			if ((is_redirect(vars)) || (vars->cur->type == WORD))
+				pipeline(vars);
 		}
-		return (1);
 	}
-	return(1);
+	/* else if ((is_redirect(vars)) || (vars->cur->type == WORD))
+		simple_cmd(vars); */
 }
-
-int	redirect_list(t_vars *vars)
+/* <simple_cmd>		::=	<redirect_list> <word> <cmd_suffix>
+					|	<redirect_list> <word>
+					|	<redirect_list>
+					|	<word>	  <cmd_suffix>
+					|	<word> */
+void	simple_cmd(t_vars *vars)
 {
-	if (!(io_redirect(vars)))
-		return (0);
-	if (vars->cur->type == LESS || vars->cur->type == GREAT ||
-	vars->cur->type == DGREAT || vars->cur->type == DLESS)
+	if (is_redirect(vars))
 	{
-		if (!(redirect_list(vars)))
-			return (0);
+		redirect_list(vars);
+		if (accept(vars, WORD))
+		{
+			if ((is_redirect(vars)) || (vars->cur->type == WORD))
+				cmd_suffix(vars);
+			/* else
+				{;} */
+		}
+		/* else
+			{;} */
 	}
-	return(1);
+	else if ((is_redirect(vars)) || (vars->cur->type == WORD))
+		cmd_suffix(vars);
 }
-
-int	io_redirect(t_vars *vars)
-{
-	if (vars->cur->type == LESS || vars->cur->type == GREAT ||
-	vars->cur->type == DGREAT || vars->cur->type == DLESS)
-	{
-		next_token(vars);
-		if (expect(vars, FILENAME))
-			return (1);
-	}
-	return (0);
-} */
-
+/* <cmd_suffix>		::=	<io_redirect> <cmd_suffix>
+					|	<io_redirect> 
+					|	<word> <cmd_suffix>
+					|	<word>  */
 void	cmd_suffix(t_vars *vars)
 {
-	if (token_type(vars, LESS) || token_type(vars, GREAT) ||
-	token_type(vars, DGREAT) || token_type(vars, DLESS))
+	if (is_redirect(vars))
 	{
 		io_redirect(vars);
-		if (token_type(vars, LESS) || token_type(vars, GREAT) ||
-	token_type(vars, DGREAT) || token_type(vars, DLESS)) || token_type(vars, WORD) // all words filename?
+		if ((is_redirect(vars)) || (vars->cur->type == WORD)) // all words filename?
+			cmd_suffix(vars);
 	}
-
-
+	/* else if (is_redirect(vars))
+		io_redirect(vars); */
+	else if (accept(vars, WORD))
 	{
-		if (!(cmd_suffix(vars)))
-			return (0);
+		if ((is_redirect(vars)) || (vars->cur->type == WORD)) // all words filename?
+			cmd_suffix(vars);
 	}
-	else
-	{
-		if (!(accept(vars, WORD)))
-			return (0);
-		if (vars->cur->type == LESS || vars->cur->type == GREAT ||
-		vars->cur->type == DGREAT || vars->cur->type == DLESS || 
-		vars->cur->type == WORD)
-		{
-			if (!(cmd_suffix(vars)))
-				return (0);
-		}
-		return (1);
-	}
-	return(1);
+	/* else if (accept(vars, WORD))
+		{;} */
 }
-
-
+/* <redirect_list>		::=	<io_redirect> <redirect_list>
+					|	<io_redirect> */
 void	redirect_list(t_vars *vars)
 {
 	io_redirect(vars);
-	if (vars->cur->type == LESS || vars->cur->type == GREAT ||
-	vars->cur->type == DGREAT || vars->cur->type == DLESS)
+	if (is_redirect(vars))
 		redirect_list(vars);
 }
-
+//<io_redirect>		::= ['<'|'>'|'<<'|'>>'] <filename>
 void	io_redirect(t_vars *vars)
 {
-	if (token_type(vars, LESS) || token_type(vars, GREAT) ||
-	token_type(vars, DGREAT) || token_type(vars, DLESS))
+	if (is_redirect(vars))
 	{
 		next_token(vars);
 		expect(vars, FILENAME);

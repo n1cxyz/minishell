@@ -40,9 +40,10 @@ void	next_token(t_vars *vars)
 	}
 }
 
-int	token_type(t_vars *vars, int type)
+int	is_redirect(t_vars *vars)
 {
-	if (vars->cur->type == type)
+	if (vars->cur->type == LESS || vars->cur->type == GREAT ||
+	vars->cur->type == DGREAT || vars->cur->type == DLESS)
 		return (1);
 	return (0);
 }
