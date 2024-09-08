@@ -39,3 +39,10 @@ void	next_token(t_vars *vars)
         	vars->cur = vars->cur->next;
 	}
 }
+
+int	token_type(t_vars *vars, int type)
+{
+	if (vars->cur->type == type)
+		return (1);
+	return (0);
+}

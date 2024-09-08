@@ -91,7 +91,7 @@ int	handle_word(t_vars *vars, char *s, int i, int type)
 	while (!(is_delimiter(s[i])))
 	{
 		//	bugfix for "'asd'?HOME"
-		if (s[i] == '$' && ((i - j) > 0))
+		if (((get_char_type(s[i])) == NAME) && ((i - j) > 0))
 		{
 			add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
 			return (i);
@@ -126,6 +126,6 @@ int	handle_name(t_vars *vars, char *s, int i, int type)
 	if (i - j == 1)
 		add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
 	else
-		add_token(&vars->head, new_token(ft_substr(s, j, i - j), NAME));
+		add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD)); // type NAME
 	return (i);	
 }

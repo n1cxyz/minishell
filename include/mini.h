@@ -34,7 +34,7 @@ enum tokentype {
 	GENERAL, 
 	SPACE,
 	WORD,
-	NAME,
+	NAME = '?',
 	EMPTY,
 	FILENAME,
 	END
@@ -62,6 +62,7 @@ typedef struct s_vars
 //			TOKEN
 t_token		*new_token(char *content, int type);
 void		add_token(t_token **lst, t_token *new);
+int			token_type(t_vars *vars, int type);
 void		free_token(t_token *token);
 void		free_error_exit(t_vars *vars, char *msg);
 //			TESTING
@@ -85,8 +86,8 @@ int 		accept(t_vars *vars, int type);
 int			expect(t_vars *vars, int type);
 void		next_token(t_vars *vars);
 //			PARSING
-int			io_redirect(t_vars *vars);
-int			redirect_list(t_vars *vars);
+void		io_redirect(t_vars *vars);
+void		redirect_list(t_vars *vars);
 int			cmd_suffix(t_vars *vars);
 int			simple_command(t_vars *vars);
 int			pipeline(t_vars *vars);
