@@ -28,7 +28,7 @@ enum tokentype {
 	GREAT = '>',
 	PIPE = '|',
 	SQUOTE = 39,
-	DQUOTE = 34,
+	DQUOTE = '-',
 	DLESS = 256,
 	DGREAT = 257,
 	GENERAL, 
@@ -92,11 +92,16 @@ void		redirect_list(t_vars *vars);
 void		cmd_suffix(t_vars *vars);
 void		simple_cmd(t_vars *vars);
 void		pipeline(t_vars *vars);
+//			EXPANDING
+void		expand(t_vars *vars);
+void		expand_names(t_vars *vars);
+void		contains_dollar(char *s);
 //			UTILS
 void		syntax_error(t_vars *vars);
 void		check_invalid_syntax(t_vars *vars, char c);
 int			is_delimiter(char c);
 int			is_space(char c);
+int			is_name_delimiter(char c);
 void		word_to_filename(t_token *head);
 #endif
 
@@ -122,6 +127,7 @@ void		word_to_filename(t_token *head);
 					|	<io_redirect>
 
 <io_redirect>		::= ['<'|'>'|'<<'|'>>'] <filename>
+
 
 
 

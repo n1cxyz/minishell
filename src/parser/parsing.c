@@ -40,6 +40,7 @@ void	simple_cmd(t_vars *vars)
 		redirect_list(vars);
 		if (accept(vars, WORD))
 		{
+			
 			if ((is_redirect(vars)) || (vars->cur->type == WORD))
 				cmd_suffix(vars);
 			/* else
@@ -88,5 +89,6 @@ void	io_redirect(t_vars *vars)
 	{
 		next_token(vars);
 		expect(vars, FILENAME);
+
 	}
 }

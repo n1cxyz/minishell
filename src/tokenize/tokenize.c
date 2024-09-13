@@ -28,13 +28,14 @@ void	tokenize(t_vars *vars, char *s)
 			i = handle_spaces(vars, s, i, type); */
 		if (type == '<' || type == '>' || type == '|')
 			i = handle_redirectors(vars, s, i, type);
-		else if (type == SQUOTE)
-			i = handle_squotes(vars, s, i + 1, type);
+		/* else if (type == SQUOTE)
+			i = handle_squotes(vars, s, i, type);
 		else if (type == DQUOTE)
-			i = handle_dquotes(vars, s, i + 1, type);
-		else if (type == NAME)
-			i = handle_name(vars, s, i, type);
-		else if (type == GENERAL)
+			i = handle_dquotes(vars, s, i, type); */
+		/* else if (type == NAME)
+			i = handle_name(vars, s, i, type); */
+		else if (type == GENERAL || type == SQUOTE || type == DQUOTE || 
+		type == NAME)
 			i = handle_word(vars, s, i, type);
 	}
 	add_token(&vars->head, new_token(NULL, NEWLINE));

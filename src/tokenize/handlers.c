@@ -49,6 +49,7 @@ int	handle_squotes(t_vars *vars, char *s, int i, int type)
 
 	j = i;
 	(void)type;
+	i++;
 	while (s[i] != '\0')
 	{
 		if (get_char_type(s[i]) == SQUOTE)
@@ -57,8 +58,8 @@ int	handle_squotes(t_vars *vars, char *s, int i, int type)
 	}
 	if (s[i] == '\0')
 		free_error_exit(vars, "unclosed squote\n");
-	add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD)); // type SQUOTE
-	i++;
+	//add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD)); // type SQUOTE
+	//i++;
 	return (i);	
 }
 
@@ -68,7 +69,8 @@ int	handle_dquotes(t_vars *vars, char *s, int i, int type)
 
 	j = i;
 	(void)type;
-	printf(":%c 1\n", s[i]);
+	i++;
+	//printf(":%c 1\n", s[i]);
 	while (s[i] != '\0')
 	{
 		if (get_char_type(s[i]) == DQUOTE)
@@ -77,8 +79,8 @@ int	handle_dquotes(t_vars *vars, char *s, int i, int type)
 	}
 	if (s[i] == '\0')
 		free_error_exit(vars, "unclosed dquote\n");
-	add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));// type DQUOTE
-	i++;
+	//add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));// type DQUOTE
+	//i++;
 	return (i);	
 }
 
@@ -91,20 +93,22 @@ int	handle_word(t_vars *vars, char *s, int i, int type)
 	while (!(is_delimiter(s[i])))
 	{
 		//	bugfix for "'asd'?HOME"
-		if (((get_char_type(s[i])) == NAME) && ((i - j) > 0))
+		/* if (((get_char_type(s[i])) == NAME) && ((i - j) > 0))
 		{
 			add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
-			return (i);
-		}
-		else if (get_char_type(s[i]) == SQUOTE)
+			//return (i);
+		} */
+		if (get_char_type(s[i]) == SQUOTE)
 		{
-			add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
-			return (i);
+			i = handle_squotes(vars, s, i , type);
+			//add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
+			//return (i);
 		}
 		else if (get_char_type(s[i]) == DQUOTE)
 		{
-			add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
-			return (i);
+			i = handle_dquotes(vars, s, i , type);
+			//add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
+			//return (i);
 		}
 		i++;
 	}
