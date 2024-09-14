@@ -47,7 +47,7 @@ void	free_error_exit(t_vars *vars, char *msg)
 
 void syntax_error(t_vars *vars)
 {
-	//exit code 2
+	vars->exit_code = 2;
 	ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
 	if (vars->cur->content)
 		ft_putstr_fd(vars->cur->content, STDERR_FILENO);
@@ -55,4 +55,26 @@ void syntax_error(t_vars *vars)
 		ft_putstr_fd("newline", STDERR_FILENO);
 	ft_putchar_fd(SQUOTE, STDERR_FILENO);
 	ft_putchar_fd('\n', STDERR_FILENO);
+}
+
+void permission_denied(t_vars *vars)
+{
+	vars->exit_code = 1;
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	if (vars->cur->content)
+		ft_putstr_fd(vars->cur->content, STDERR_FILENO);
+	else
+		ft_putstr_fd("<void>", STDERR_FILENO);
+	ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+}
+
+void no_such_file(t_vars *vars)
+{
+	vars->exit_code = 1;
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	if (vars->cur->content)
+		ft_putstr_fd(vars->cur->content, STDERR_FILENO);
+	else
+		ft_putstr_fd("<void>", STDERR_FILENO);
+	ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 }

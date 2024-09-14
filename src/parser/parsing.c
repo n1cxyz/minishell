@@ -21,6 +21,12 @@ void	pipeline(t_vars *vars)
 		if (vars->cur->type == PIPE)
 		{
 			next_token(vars);
+			if (vars->cur->type == PIPE)
+			{
+				vars->error_status++;
+				if (vars->error_status == 1)
+					syntax_error(vars);
+			}
 			if ((is_redirect(vars)) || (vars->cur->type == WORD))
 				pipeline(vars);
 		}
@@ -89,6 +95,5 @@ void	io_redirect(t_vars *vars)
 	{
 		next_token(vars);
 		expect(vars, WORD);
-
 	}
 }

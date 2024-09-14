@@ -158,3 +158,42 @@ void	print_token_list(t_token *head)
 		head = head->next;
 	}
 }
+
+void	print_struct(t_pipex *data)
+{
+	if (data->here_doc)
+		printf("here_doc: true\n");
+	else
+		printf("here_doc: false\n");
+	if (data->limiter)
+		printf("limiter: %s\n", data->limiter);
+	else
+		printf("limiter: null\n");
+	if (data->file_in)
+		printf("file_in: %s\n", data->file_in);
+	else
+		printf("file_in: null\n");
+	printf("cmd_count: %d\n", data->cmd_count);
+	/*
+	*/
+	if (data->append)
+		printf("append: true\n");
+	else
+		printf("append: false\n");
+	if (data->file_out)
+		printf("file_out: %s\n", data->file_out);
+	else
+		printf("file_out: null\n");
+	//printf("%d\n", data->exit_code);	
+}
+
+void	init_struct(t_pipex *data)
+{
+	data->here_doc = false;
+	data->limiter = NULL;
+	data->file_in = NULL;
+	data->cmd_count = 0;
+	data->append = false;
+	data->file_out = NULL;
+	data->exit_code = 0;
+}

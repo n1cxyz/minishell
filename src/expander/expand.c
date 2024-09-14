@@ -22,7 +22,14 @@ void	expand(t_vars *vars)
 			find_names(vars);
 		next_token(vars);
 	}
-	// remove_quotes();
+	vars->cur = vars->head;
+	next_token(vars);
+	while (vars->cur->type != NEWLINE)
+	{
+		if (vars->cur->type == WORD)
+			remove_quotes(vars);
+		next_token(vars);
+	}
 }
 
 void		find_names(t_vars *vars)
@@ -106,34 +113,4 @@ char	*substr_remove(t_vars *vars, char c)
 	}
 	result[i] = '\0';
 	return (result);
-}
-char	*get_name(t_vars *vars, int i)
-{
-	int	j;
-	int	len;
-
-	len = 0;
-	j = i;
-	while (vars->cur->content[i])
-	{
-		if ((is_name_delimiter(vars->cur->content[i])) || (get_char_type(vars->cur->content[i]) == DQUOTE))
-			break;
-		len++;
-		i++;
-	}
-	return (ft_substr(vars->cur->content, j, len));
-}
-
-int	get_name_index(t_vars *vars, char *name)
-{
-	int	i;
-
-	i = 0;
-	while (vars->cur->content[i])
-	{
-		if ((ft_strncmp(vars->cur->content + i, name, ft_strlen(name))) == 0)
-			return (i);
-		i++;
-	}
-	return (i);
 }

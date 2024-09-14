@@ -14,10 +14,11 @@
 
 void	init_vars(t_vars *vars)
 {
-	//vars->quote_counter = 0;
-	//vars->dquote_status = 0;
-	//vars->added_token = 0;
+	vars->exit_code = 0;
+	vars->infile_count = 0;
+	vars->outfile_count = 0;
 	vars->error_status = 0;
+	vars->cmd_count = 1; // ?
 	vars->head = (t_token *)malloc(sizeof(t_token));
 	if (!vars->head)
 	{
@@ -34,8 +35,6 @@ void	parse(t_vars *vars)
 	vars->cur = vars->head;
 	next_token(vars);
 	pipeline(vars);
-	if ((expect(vars, NEWLINE)) && (!(vars->error_status)))
-		printf("SUCCESS\n");
 }
 
 int	main(int ac, char **av)
@@ -43,23 +42,29 @@ int	main(int ac, char **av)
 	if (ac > 1)
 	{
 		t_vars vars;
+		t_pipex data;
 
 		init_vars(&vars);
 		tokenize(&vars, av[1]);
-		//print_token_list(vars.head);
 		//word_to_filename(vars.head);
-		//print_token_list(vars.head);
 		parse(&vars);
-		expand(&vars);
-		print_token_list(vars.head);
+		if (!vars.exit_code)
+		{
+			expand(&vars);
+			init_struct(&data);
+			fill_struct(&vars, &data);
+			print_token_list(vars.head);
+			//print_struct(&data);
+		}
+		//free_data(&data);
 		free_token(vars.head);
 	}
 }
 /*	!!! not working
 	?HOME?SHELL
+	expander leaks/invalid read
 */
-
-//	build expander
-//	fill struct
-
-//	remove quotes
+//	TODO:
+//	add cmds to struct
+//	free struct
+//	remove quotes not correct > "outf'ile' 'c'a''t-'wc | w |'-  < src/main.c"

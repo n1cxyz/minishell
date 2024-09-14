@@ -3,7 +3,8 @@ CC			= cc
 BIN			= bin
 SRC			= src/parser/parsing_utils.c src/parser/parsing.c src/debug.c src/main.c \
 			src/tokenize/tokenize.c src/tokenize/handlers.c src/token.c src/utils.c \
-			src/expander/expand.c
+			src/expander/expand.c src/expander/expand_utils.c \
+			src/fill_struct.c
 OBJS		= $(SRC:src/%c=$(BIN)/%o)
 INCS		= include
 LIBFT		= libft
