@@ -30,6 +30,7 @@ enum tokentype {
 	END
 }; */
 
+
 void	print_token(t_token *token)
 {
 	if (token->type == SPACE)
@@ -148,6 +149,7 @@ void	check_invalid_syntax(t_vars *vars, char c)
 	}
 }
 
+//		!! leaks memory
 void	print_token_list(t_token *head)
 {
 	while (head)

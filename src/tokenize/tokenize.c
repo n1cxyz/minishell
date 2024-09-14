@@ -20,20 +20,11 @@ void	tokenize(t_vars *vars, char *s)
 	i = 0;
 	while (s[i] != '\n' && s[i] != '\0')
 	{
-		//check_invalid_syntax(vars, s[i]);
 		type = get_char_type(s[i]);
 		while (get_char_type(s[i]) == SPACE)
 			i++;
-		/* if (type == SPACE)
-			i = handle_spaces(vars, s, i, type); */
 		if (type == '<' || type == '>' || type == '|')
 			i = handle_redirectors(vars, s, i, type);
-		/* else if (type == SQUOTE)
-			i = handle_squotes(vars, s, i, type);
-		else if (type == DQUOTE)
-			i = handle_dquotes(vars, s, i, type); */
-		/* else if (type == NAME)
-			i = handle_name(vars, s, i, type); */
 		else if (type == GENERAL || type == SQUOTE || type == DQUOTE || 
 		type == NAME)
 			i = handle_word(vars, s, i, type);
@@ -65,10 +56,6 @@ int	get_char_type(int c)
 		return (GENERAL);
 }
  
- /*		parses through the linked list and converts any element with 
-TYPE: LESS, GREAT or DGREAT who is preceeded by an element with TYPE: WORD
-to TYPE: FILENAME
-*/
 void	word_to_filename(t_token *head)
 {
 	while (head)

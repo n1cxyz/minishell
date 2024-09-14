@@ -36,7 +36,6 @@ void	parse(t_vars *vars)
 	pipeline(vars);
 	if ((expect(vars, NEWLINE)) && (!(vars->error_status)))
 		printf("SUCCESS\n");
-	print_token_list(vars->head);
 }
 
 int	main(int ac, char **av)
@@ -47,13 +46,20 @@ int	main(int ac, char **av)
 
 		init_vars(&vars);
 		tokenize(&vars, av[1]);
-		word_to_filename(vars.head);
-		expand(&vars);
+		//print_token_list(vars.head);
+		//word_to_filename(vars.head);
+		//print_token_list(vars.head);
 		parse(&vars);
+		expand(&vars);
+		print_token_list(vars.head);
 		free_token(vars.head);
 	}
 }
-//	fix tokenizer
+/*	!!! not working
+	?HOME?SHELL
+*/
+
 //	build expander
 //	fill struct
-//handle name in dquote
+
+//	remove quotes

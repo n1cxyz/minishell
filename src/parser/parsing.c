@@ -88,7 +88,7 @@ void	io_redirect(t_vars *vars)
 	if (is_redirect(vars))
 	{
 		next_token(vars);
-		expect(vars, FILENAME);
+		expect(vars, WORD);
 
 	}
 }

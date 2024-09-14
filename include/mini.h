@@ -94,8 +94,11 @@ void		simple_cmd(t_vars *vars);
 void		pipeline(t_vars *vars);
 //			EXPANDING
 void		expand(t_vars *vars);
-void		expand_names(t_vars *vars);
-void		contains_dollar(char *s);
+char		*get_name(t_vars *vars, int i);
+int			get_name_index(t_vars *vars, char *name);
+void		find_names(t_vars *vars);
+char		*substr_replace(t_vars *vars, char *s1, int index);
+char		*substr_remove(t_vars *vars, char c);
 //			UTILS
 void		syntax_error(t_vars *vars);
 void		check_invalid_syntax(t_vars *vars, char c);

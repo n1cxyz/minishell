@@ -1,3 +1,4 @@
+./minishell "?HOME"
 ./minishell "<Makefilecat| < wc-w\>ou"
 ./minishell "<Makefilecat| | wc-w\>ou"
 ./minishell "<Makefilecat|wc-w\>ou"

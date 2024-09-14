@@ -45,9 +45,6 @@ int	handle_redirectors(t_vars *vars, char *s, int i, int type)
 int	handle_squotes(t_vars *vars, char *s, int i, int type)
 {
 	//	many spaces in quote ' $HOME                 '  ?
-	int	j;
-
-	j = i;
 	(void)type;
 	i++;
 	while (s[i] != '\0')
@@ -58,19 +55,13 @@ int	handle_squotes(t_vars *vars, char *s, int i, int type)
 	}
 	if (s[i] == '\0')
 		free_error_exit(vars, "unclosed squote\n");
-	//add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD)); // type SQUOTE
-	//i++;
 	return (i);	
 }
 
 int	handle_dquotes(t_vars *vars, char *s, int i, int type)
 {
-	int	j;
-
-	j = i;
 	(void)type;
 	i++;
-	//printf(":%c 1\n", s[i]);
 	while (s[i] != '\0')
 	{
 		if (get_char_type(s[i]) == DQUOTE)
@@ -79,8 +70,6 @@ int	handle_dquotes(t_vars *vars, char *s, int i, int type)
 	}
 	if (s[i] == '\0')
 		free_error_exit(vars, "unclosed dquote\n");
-	//add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));// type DQUOTE
-	//i++;
 	return (i);	
 }
 
@@ -92,24 +81,10 @@ int	handle_word(t_vars *vars, char *s, int i, int type)
 	j = i;
 	while (!(is_delimiter(s[i])))
 	{
-		//	bugfix for "'asd'?HOME"
-		/* if (((get_char_type(s[i])) == NAME) && ((i - j) > 0))
-		{
-			add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
-			//return (i);
-		} */
 		if (get_char_type(s[i]) == SQUOTE)
-		{
 			i = handle_squotes(vars, s, i , type);
-			//add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
-			//return (i);
-		}
 		else if (get_char_type(s[i]) == DQUOTE)
-		{
 			i = handle_dquotes(vars, s, i , type);
-			//add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
-			//return (i);
-		}
 		i++;
 	}
 	add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
@@ -123,10 +98,7 @@ int	handle_name(t_vars *vars, char *s, int i, int type)
 
 	j = i;
 	while ((!(is_delimiter(s[i]))) && ((s[i] != SQUOTE) && (s[i] != DQUOTE)))
-	{
-		//check_invalid_syntax(vars, s[i]);
 		i++;
-	}
 	if (i - j == 1)
 		add_token(&vars->head, new_token(ft_substr(s, j, i - j), WORD));
 	else
