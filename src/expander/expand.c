@@ -18,7 +18,7 @@ void	expand(t_vars *vars)
 	next_token(vars);
 	while (vars->cur->type != NEWLINE)
 	{
-		if (vars->cur->type == WORD)
+		if (vars->cur->type == WORD && vars->cur->content != NULL)
 			find_names(vars);
 		next_token(vars);
 	}
@@ -40,6 +40,7 @@ void		find_names(t_vars *vars)
 
 	(void)vars;
 	i = 0;
+	//printf("s: %s\n", vars->cur->content);
 	while(vars->cur->content[i])
 	{
 		while (vars->cur->content[i] == 39)
@@ -51,6 +52,8 @@ void		find_names(t_vars *vars)
 			vars->cur->content = substr_replace(vars, name, index);
 			free (name);
 		}
+		if (vars->cur->content[i] == '\0')
+			break;
 		i++;
 	}
 	//free (vars->cur->content);

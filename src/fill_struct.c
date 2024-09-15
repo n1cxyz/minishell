@@ -44,7 +44,7 @@ void	handle_words(t_vars *vars, t_pipex *data)
 	{
 		if (is_redirect(vars))
 		{
-			next_token(vars);
+			handle_operators(vars, data);
 			next_token(vars);
 			if (vars->cur->type == PIPE || vars->cur->type == NEWLINE)
 				break;
@@ -60,6 +60,7 @@ void	handle_words(t_vars *vars, t_pipex *data)
 	data->cmd_argv[i][j] = NULL;
 	i++;
 }
+//< Makefile cat | wc -w > outfile
 
 void	handle_operators(t_vars *vars, t_pipex *data)
 {

@@ -49,7 +49,11 @@ void	remove_quotes(t_vars *vars)
 		{
 			if (j == q1 || j == q2)
 				j++;
-			buffer[i++] = vars->cur->content[j++];
+			buffer[i] = vars->cur->content[j];
+			if (vars->cur->content[j] == '\0')
+				break ;
+			i++;
+			j++;
 		}
 		j = ft_strlen(vars->cur->content) - 2;
 		free (vars->cur->content);
