@@ -1,4 +1,4 @@
-#include "mini.h"
+#include "mini_dasal.h"
 
 char	*get_name(t_vars *vars, int i)
 {

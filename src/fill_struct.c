@@ -1,4 +1,4 @@
-#include "mini.h"
+#include "mini_dasal.h"
 
 void	fill_struct(t_vars *vars, t_pipex *data)
 {
@@ -22,6 +22,8 @@ void	fill_struct(t_vars *vars, t_pipex *data)
 		}
 		if (vars->cur->type == WORD)
 			handle_words(vars, data);
+		if (vars->cur->type == NEWLINE)
+			break;
 		next_token(vars);
 	}
 }
@@ -182,11 +184,14 @@ void	init_struct(t_pipex *data, t_vars *vars)
 	data->cmd_argv = (char ***)malloc(sizeof(char **) * data->cmd_count);
 	for (int i = 0; i < data->cmd_count; i++)
 	{
-		data->cmd_argv[i] = (char **)malloc(sizeof(char *) * vars->arg_count);
+		data->cmd_argv[i] = (char **)malloc(sizeof(char *) * (vars->arg_count + 1));
 		for (int j = 0; j < vars->arg_count; j++)
 			data->cmd_argv[i][j] = NULL;
 	}
 	data->append = false;
 	data->file_out = NULL;
+	data->env = NULL;
+	data->fd_in = -1;
+	data->fd_out = -1;
 	data->exit_code = 0;
 }

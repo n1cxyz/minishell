@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "mini_dasal.h"
 
 void	init_vars(t_vars *vars)
 {

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 
-#include "mini.h"
+#include "mini_dasal.h"
 
 int	is_delimiter(char c)
 {

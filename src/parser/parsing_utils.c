@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "mini_dasal.h"
 
 int accept(t_vars *vars, int type)
 {

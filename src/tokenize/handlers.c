@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "mini_dasal.h"
 
 int	handle_spaces(t_vars *vars, char *s, int i, int type)
 {

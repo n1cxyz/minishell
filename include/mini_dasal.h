@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINI_H
-#define MINI_H
+#ifndef MINI_DASAL_H
+#define MINI_DASAL_H
 
 # include <stdio.h>
 # include <stdlib.h>

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "mini_dasal.h"
 
 t_token	*new_token(char *content, int type)
 {

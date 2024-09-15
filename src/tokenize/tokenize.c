@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "mini_dasal.h"
 
 void	tokenize(t_vars *vars, char *s)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "mini_dasal.h"
 /* <pipeline>			::=	<simple_cmd> '|' <pipeline> 
 					|	<simple_cmd> 'ε' */
 void	pipeline(t_vars *vars)
