@@ -19,6 +19,7 @@ void	init_vars(t_vars *vars)
 	vars->outfile_count = 0;
 	vars->error_status = 0;
 	vars->cmd_count = 1; // ?
+	vars->arg_count = 0;
 	vars->head = (t_token *)malloc(sizeof(t_token));
 	if (!vars->head)
 	{
@@ -51,12 +52,11 @@ int	main(int ac, char **av)
 		if (!vars.exit_code)
 		{
 			expand(&vars);
-			init_struct(&data);
 			fill_struct(&vars, &data);
-			print_token_list(vars.head);
-			//print_struct(&data);
+			//print_token_list(vars.head);
+			print_struct(&data);
+			free_struct(&data, &vars);
 		}
-		//free_data(&data);
 		free_token(vars.head);
 	}
 }
@@ -65,6 +65,6 @@ int	main(int ac, char **av)
 	expander leaks/invalid read
 */
 //	TODO:
-//	add cmds to struct
-//	free struct
-//	remove quotes not correct > "outf'ile' 'c'a''t-'wc | w |'-  < src/main.c"
+//	remove quotes not correct: "> outf'ile' 'c'a''t-'wc | w |'-  < src/main.c"
+//	problem with here_doc and multiple infile: "<< eof cat | wc -w > out  < src/main.c"
+//	pipe at end of command: "< Makefile cat |  wc w >> outfile | ls l | "

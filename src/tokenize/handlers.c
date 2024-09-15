@@ -54,7 +54,7 @@ int	handle_squotes(t_vars *vars, char *s, int i, int type)
 		i++;
 	}
 	if (s[i] == '\0')
-		free_error_exit(vars, "unclosed squote\n");
+		free_error_exit(vars, "minishell: unclosed squote\n");
 	return (i);	
 }
 

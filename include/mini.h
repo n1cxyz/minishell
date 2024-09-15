@@ -57,6 +57,7 @@ typedef struct s_vars
 	int		infile_count;
 	int		outfile_count;
 	int		cmd_count;
+	int		arg_count;
 	int		exit_code;
 	t_token	*head;
 	t_token *cur;
@@ -94,7 +95,7 @@ void		free_error_exit(t_vars *vars, char *msg);
 void		print_token(t_token *token);
 void		print_token_list(t_token *list);
 void		print_struct(t_pipex *data);
-void		init_struct(t_pipex *data);
+void		init_struct(t_pipex *data, t_vars *vars);
 //			MAIN
 void		init_vars(t_vars *vars);
 //			TOKENIZE
@@ -132,6 +133,7 @@ int			find_q1(t_vars *vars);
 int			find_q2(t_vars *vars);
 //			FILL STRUCT
 void		fill_struct(t_vars *vars, t_pipex *data);
+void		handle_words(t_vars *vars, t_pipex *data);
 void		handle_operators(t_vars *vars, t_pipex *data);
 void		handle_input(t_vars *vars, t_pipex *data);
 void		handle_output(t_vars *vars, t_pipex *data);
@@ -141,11 +143,13 @@ void		count_operators(t_vars *vars, int type);
 void		syntax_error(t_vars *vars);
 void 		no_such_file(t_vars *vars);
 void 		permission_denied(t_vars *vars);
+void		unclosed_quote(t_vars *vars);
 void		check_invalid_syntax(t_vars *vars, char c);
 int			is_delimiter(char c);
 int			is_space(char c);
 int			is_name_delimiter(char c);
 void		word_to_filename(t_token *head);
+void		free_struct(t_pipex *data, t_vars *vars);
 #endif
 
 //https://en.wikipedia.org/wiki/Recursive_descent_parser

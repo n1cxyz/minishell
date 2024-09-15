@@ -168,14 +168,39 @@ void	print_struct(t_pipex *data)
 	if (data->limiter)
 		printf("limiter: %s\n", data->limiter);
 	else
-		printf("limiter: null\n");
+		printf("limiter: NULL\n");
 	if (data->file_in)
 		printf("file_in: %s\n", data->file_in);
 	else
-		printf("file_in: null\n");
+		printf("file_in: NULL\n");
 	printf("cmd_count: %d\n", data->cmd_count);
-	/*
-	*/
+	if (data->cmd)
+	{
+		for (int i = 0; i < data->cmd_count; i++)
+		{
+			if (data->cmd[i])
+				printf("cmd: %s\n", data->cmd[i]);
+			else
+				printf("cmd[i]: NULL\n");
+		}
+	}
+	else
+		printf("cmd: NULL\n");
+	if (data->cmd_argv)
+	{
+		for (int i = 0; i < data->cmd_count; i++)
+		{
+			for (int j = 0; data->cmd_argv[i][j]; j++)
+			{
+				if (data->cmd_argv[i][j])
+					printf("cmd_argv[%d][%d] = %s\n", i, j, data->cmd_argv[i][j]);
+				else
+					printf("cmd_argv[i][j]: NULL\n");
+			}
+		}
+	}
+	else
+		printf("cmd_argv: NULL\n");
 	if (data->append)
 		printf("append: true\n");
 	else
@@ -183,17 +208,6 @@ void	print_struct(t_pipex *data)
 	if (data->file_out)
 		printf("file_out: %s\n", data->file_out);
 	else
-		printf("file_out: null\n");
+		printf("file_out: NULL\n");
 	//printf("%d\n", data->exit_code);	
-}
-
-void	init_struct(t_pipex *data)
-{
-	data->here_doc = false;
-	data->limiter = NULL;
-	data->file_in = NULL;
-	data->cmd_count = 0;
-	data->append = false;
-	data->file_out = NULL;
-	data->exit_code = 0;
 }

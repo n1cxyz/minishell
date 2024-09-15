@@ -10,14 +10,53 @@ void	fill_struct(t_vars *vars, t_pipex *data)
 		next_token(vars);
 	}
 	data->cmd_count = vars->cmd_count;
+	init_struct(data, vars);
 	vars->cur = vars->head;
 	next_token(vars);
 	while (vars->cur->type != NEWLINE)
 	{
 		if (is_redirect(vars))
+		{
 			handle_operators(vars, data);
+			next_token(vars);
+		}
+		if (vars->cur->type == WORD)
+			handle_words(vars, data);
 		next_token(vars);
 	}
+}
+
+void	handle_words(t_vars *vars, t_pipex *data)
+{
+	static int	i;
+	int	j;
+
+	j = 0;
+	if (vars->cur->type == WORD)
+	{
+		data->cmd[i] = ft_strdup(vars->cur->content);
+		data->cmd_argv[i][j] = ft_strdup(vars->cur->content);
+		next_token(vars);
+	}
+	while (vars->cur->type != PIPE && vars->cur->type != NEWLINE)
+	{
+		if (is_redirect(vars))
+		{
+			next_token(vars);
+			next_token(vars);
+			if (vars->cur->type == PIPE || vars->cur->type == NEWLINE)
+				break;
+		}
+		if (vars->cur->type == WORD)
+		{
+			j++;
+			data->cmd_argv[i][j] = ft_strdup(vars->cur->content);
+		}
+		next_token(vars);
+	}
+	j++;
+	data->cmd_argv[i][j] = NULL;
+	i++;
 }
 
 void	handle_operators(t_vars *vars, t_pipex *data)
@@ -39,7 +78,7 @@ void	handle_input(t_vars *vars, t_pipex *data)
 		next_token(vars);
 		data->here_doc = true;
 		data->limiter = ft_strdup(vars->cur->content);
-		// data->file_in ?
+		data->file_in = NULL;
 	}
 	else if (vars->cur->type == LESS)
 	{
@@ -124,5 +163,30 @@ void	count_operators(t_vars *vars, int type)
 	else if (type == DGREAT)
 		vars->outfile_count++;
 	else if (type == PIPE)
-		vars->cmd_count++;
+		vars->cmd_count++; //	vars is being counted not data
+	else if (type == WORD)
+		vars->arg_count++;
+}
+
+void	init_struct(t_pipex *data, t_vars *vars)
+{
+	(void)vars;
+	data->here_doc = false;
+	data->limiter = NULL;
+	data->file_in = NULL;
+	//data->cmd_count = 0;
+	data->cmd = (char **)malloc(sizeof(char *) * data->cmd_count);
+	for (int i = 0; i < data->cmd_count; i++)
+		data->cmd[i] = NULL;
+	
+	data->cmd_argv = (char ***)malloc(sizeof(char **) * data->cmd_count);
+	for (int i = 0; i < data->cmd_count; i++)
+	{
+		data->cmd_argv[i] = (char **)malloc(sizeof(char *) * vars->arg_count);
+		for (int j = 0; j < vars->arg_count; j++)
+			data->cmd_argv[i][j] = NULL;
+	}
+	data->append = false;
+	data->file_out = NULL;
+	data->exit_code = 0;
 }
