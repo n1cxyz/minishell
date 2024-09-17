@@ -18,9 +18,9 @@ void	fill_struct(t_vars *vars, t_pipex *data)
 		if (is_redirect(vars))
 		{
 			handle_operators(vars, data);
-			next_token(vars);
+			//next_token(vars);
 		}
-		if (vars->cur->type == WORD)
+		else if (vars->cur->type == WORD)
 			handle_words(vars, data);
 		if (vars->cur->type == NEWLINE)
 			break;
@@ -45,11 +45,11 @@ void	handle_words(t_vars *vars, t_pipex *data)
 		if (is_redirect(vars))
 		{
 			handle_operators(vars, data);
-			next_token(vars);
-			if (vars->cur->type == PIPE || vars->cur->type == NEWLINE)
+			//next_token(vars);
+			if (vars->cur->next->type == PIPE || vars->cur->next->type == NEWLINE)
 				break;
 		}
-		if (vars->cur->type == WORD)
+		else if (vars->cur->type == WORD)
 		{
 			j++;
 			data->cmd_argv[i][j] = ft_strdup(vars->cur->content);

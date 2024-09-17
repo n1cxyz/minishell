@@ -63,6 +63,9 @@ int	main(int ac, char **av)
 /*	!!! not working
 	?HOME?SHELL
 	expander leaks/invalid read
+	multiple in/out file
+	echo $?
+
 */
 //	TODO:
 //	remove quotes not correct: "> outf'ile' 'c'a''t-'wc | w |'-  < src/main.c"
