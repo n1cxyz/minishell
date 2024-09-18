@@ -47,7 +47,9 @@ void		find_names(t_vars *vars)
 			i++;
 		if (((get_char_type(vars->cur->content[i])) == NAME))
 		{
+			printf("hello\n");
 			name = get_name(vars, i);
+			i--;
 			index = get_name_index(vars, name);
 			vars->cur->content = substr_replace(vars, name, index);
 			free (name);

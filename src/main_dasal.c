@@ -51,9 +51,9 @@ int	main(int ac, char **av)
 		parse(&vars);
 		if (!vars.exit_code)
 		{
+			print_token_list(vars.head);
 			expand(&vars);
 			fill_struct(&vars, &data);
-			//print_token_list(vars.head);
 			print_struct(&data);
 			free_struct(&data, &vars);
 		}
@@ -65,6 +65,9 @@ int	main(int ac, char **av)
 	expander leaks/invalid read
 	multiple in/out file
 	echo $?
+	valgrind ./minishell "?HOMEa"
+	"?HOMEa ?SHELL"
+	-?HOME?SHELL-
 
 */
 //	TODO:

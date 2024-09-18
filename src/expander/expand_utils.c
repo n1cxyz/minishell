@@ -13,6 +13,8 @@ char	*get_name(t_vars *vars, int i)
 			break;
 		len++;
 		i++;
+		if ((get_char_type(vars->cur->content[i]) == NAME))
+			break;
 	}
 	return (ft_substr(vars->cur->content, j, len));
 }
