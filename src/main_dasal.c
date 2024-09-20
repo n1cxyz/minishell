@@ -51,7 +51,7 @@ int	main(int ac, char **av)
 		parse(&vars);
 		if (!vars.exit_code)
 		{
-			print_token_list(vars.head);
+			//print_token_list(vars.head);
 			expand(&vars);
 			fill_struct(&vars, &data);
 			print_struct(&data);
@@ -61,13 +61,20 @@ int	main(int ac, char **av)
 	}
 }
 /*	!!! not working
-	?HOME?SHELL
-	expander leaks/invalid read
-	multiple in/out file
-	echo $?
-	valgrind ./minishell "?HOMEa"
+	valgrind ./minishell "'?HOME'"
 	"?HOMEa ?SHELL"
 	-?HOME?SHELL-
+	vars->cur->content
+	?HOME?SHELL
+	unclosed quuote \n
+	whitespaces in quotes
+	echo $variable
+
+	command count	
+	multiple in/out file
+	echo $?
+	empty heredoc
+	make getenv
 
 */
 //	TODO:

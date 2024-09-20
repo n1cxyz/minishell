@@ -40,16 +40,16 @@ void		find_names(t_vars *vars)
 
 	(void)vars;
 	i = 0;
-	//printf("s: %s\n", vars->cur->content);
+	printf("content: %s\n", vars->cur->content);
 	while(vars->cur->content[i])
 	{
 		while (vars->cur->content[i] == 39)
 			i++;
 		if (((get_char_type(vars->cur->content[i])) == NAME))
 		{
-			printf("hello\n");
 			name = get_name(vars, i);
-			i--;
+			if (i > 0)
+				i--;
 			index = get_name_index(vars, name);
 			vars->cur->content = substr_replace(vars, name, index);
 			free (name);
@@ -85,6 +85,7 @@ char	*substr_replace(t_vars *vars, char *s1, int index)
 		}
 		result[i++] = vars->cur->content[j++];
 	}
+	free(vars->cur->content);
 	return (result);
 }
 
@@ -116,6 +117,7 @@ char	*substr_remove(t_vars *vars, char c)
 		result[i] = '-'; // DQUOTE
 		i++;
 	}
+	free(vars->cur->content);
 	result[i] = '\0';
 	return (result);
 }
