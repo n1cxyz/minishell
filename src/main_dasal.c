@@ -18,12 +18,12 @@ void	init_vars(t_vars *vars)
 	vars->infile_count = 0;
 	vars->outfile_count = 0;
 	vars->error_status = 0;
-	vars->cmd_count = 1; // ?
+	vars->cmd_count= 0; // ?
 	vars->arg_count = 0;
 	vars->head = (t_token *)malloc(sizeof(t_token));
 	if (!vars->head)
 	{
-        perror("Failed to allocate memory");
+        perror("Failed to allocate memory"); // ?
         exit(EXIT_FAILURE);
     }
 	vars->head->content = NULL;
@@ -52,25 +52,34 @@ int	main(int ac, char **av)
 		if (!vars.exit_code)
 		{
 			print_token_list(vars.head);
-			expand(&vars);
+			expand(&vars, &data);
 			fill_struct(&vars, &data);
 			print_struct(&data);
 			free_struct(&data, &vars);
+			//printf("%d\n", vars.cmd_count);
 		}
 		free_token(vars.head);
 	}
 }
 /*	!!! not working
-	?HOME?SHELL
-	expander leaks/invalid read
-	multiple in/out file
-	echo $?
-	valgrind ./minishell "?HOMEa"
+	multiple in/out file ?
+	multiple here_doc ?
+	empty heredoc ?
+
+	whitespaces in quotes !
+	command count !
+	make getenv !
+
+	!!!
 	"?HOMEa ?SHELL"
 	-?HOME?SHELL-
+	?
+	-?-
+	'?HOME'
+	-?HOME-
+	-?HOME?-
+	!!!
 
 */
 //	TODO:
-//	remove quotes not correct: "> outf'ile' 'c'a''t-'wc | w |'-  < src/main.c"
 //	problem with here_doc and multiple infile: "<< eof cat | wc -w > out  < src/main.c"
-//	pipe at end of command: "< Makefile cat |  wc w >> outfile | ls l | "

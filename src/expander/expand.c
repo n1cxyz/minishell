@@ -12,14 +12,14 @@
 
 #include "mini_dasal.h"
 
-void	expand(t_vars *vars)
+void	expand(t_vars *vars, t_pipex *data) //	***
 {
 	vars->cur = vars->head;
 	next_token(vars);
 	while (vars->cur->type != NEWLINE)
 	{
 		if (vars->cur->type == WORD && vars->cur->content != NULL)
-			find_names(vars);
+			expand_env(vars, data); //	***
 		next_token(vars);
 	}
 	vars->cur = vars->head;
@@ -31,91 +31,79 @@ void	expand(t_vars *vars)
 		next_token(vars);
 	}
 }
-
-void		find_names(t_vars *vars)
+//	***
+void		expand_env(t_vars *vars, t_pipex *data)
 {
-	int		i;
-	int		index;
-	char	*name;
-
-	(void)vars;
-	i = 0;
-	//printf("s: %s\n", vars->cur->content);
-	while(vars->cur->content[i])
+	char			result[1024] = {0};
+	unsigned int	result_len = 0;
+	int				in_single_quotes = 0;
+	int				i = 0;
+	
+	while (vars->cur->content[i] != '\0')
 	{
-		while (vars->cur->content[i] == 39)
+		if (vars->cur->content[i] == 39)
+		{
+			in_single_quotes = !in_single_quotes;
+			result[result_len++] = vars->cur->content[i++];
+		}
+		else if (vars->cur->content[i] == '?' && !in_single_quotes)
+		{
+			 if (vars->cur->content[i + 1] == '?' && (i == 0 || !ft_isalnum(vars->cur->content[i - 1])))
+			 {
+				char *exitcode_str = ft_itoa(vars->exit_code);
+				result_len += ft_strlcpy(result + result_len, exitcode_str, sizeof(result) - result_len);
+				i += 2;
+				free (exitcode_str);
+				continue;
+			}
+			if ((vars->cur->content[i + 1] == '\0') || (!ft_isalnum(vars->cur->content[i + 1]) && vars->cur->content[i+1] != '_'))
+			{
+				result[result_len++] = vars->cur->content[i++];
+				continue;
+			}
 			i++;
-		if (((get_char_type(vars->cur->content[i])) == NAME))
-		{
-			printf("hello\n");
-			name = get_name(vars, i);
-			i--;
-			index = get_name_index(vars, name);
-			vars->cur->content = substr_replace(vars, name, index);
-			free (name);
-		}
-		if (vars->cur->content[i] == '\0')
+			char var_name[256] = {0};
+			int var_len = 0;
+			
+			while (vars->cur->content[i] != '\0' && (ft_isalnum(vars->cur->content[i]) || vars->cur->content[i] == '_'))
+				var_name[var_len++] = vars->cur->content[i++];
+			var_name[var_len] = '\0';
+			
+			char *var_value = ft_getenv(data, var_name);
+			
+			if (var_value)
+			{
+				ft_strlcpy(result + result_len, var_value, sizeof(result) - result_len - 1);
+				result_len += ft_strlen(var_value);
+			}
+        }
+		else
+			result[result_len++] = vars->cur->content[i++];
+		if (result_len >= sizeof(result) - 1)
 			break;
-		i++;
 	}
-	//free (vars->cur->content);
+	
+	result[result_len] = '\0';
+	
+	free(vars->cur->content);
+	vars->cur->content = malloc(result_len + 1);
+	if (vars->cur->content)
+		ft_strlcpy(vars->cur->content, result, result_len + 1);
 }
 
-char	*substr_replace(t_vars *vars, char *s1, int index)
+char	*ft_getenv(t_pipex *data, char *name)
 {
-	int		i;
-	int		j;
-	char	*s2;
-	char	*result;
+	int	len;
+	int	i;
 
 	i = 0;
-	j = 0;
-	s2 = getenv(s1 + 1);
-	if (!s2)
-		return (result = substr_remove(vars, '?'));
-	result = (char *)malloc(sizeof(char) * ((ft_strlen(vars->cur->content) - 
-	ft_strlen(s1) + ft_strlen(s2)) + 1));
-	while (i < (ft_strlen(vars->cur->content) - ft_strlen(s1) + ft_strlen(s2)))
+	len = ft_strlen(name);
+	while (data->env[i])
 	{
-		if (i == index)
-		{
-			ft_memcpy(result + i, s2, ft_strlen(s2));
-			i += ft_strlen(s2);
-			j += ft_strlen(s1);
-		}
-		result[i++] = vars->cur->content[j++];
+		if (strncmp(data->env[i], name, len) == 0 && data->env[i][len] == '=')
+		 	return (data->env[i] + len + 1);
+		i++;
 	}
-	return (result);
+	return NULL;
 }
-
-char	*substr_remove(t_vars *vars, char c)
-{
-	int		i;
-	char	*result;
-
-	i = 0;
-	while (vars->cur->content[i])
-	{
-		if (vars->cur->content[i] == c)
-			break;
-		i++;
-	}
-	if (get_char_type(vars->cur->content[0]) == DQUOTE)
-		i++;
-	result = (char *)malloc(sizeof(char) * (i + 1));
-	i = 0;
-	while (vars->cur->content[i])
-	{
-		if (vars->cur->content[i] == c)
-			break;
-		result[i] = vars->cur->content[i];
-		i++;
-	}
-	if (get_char_type(vars->cur->content[0]) == DQUOTE)
-	{
-		result[i] = '-'; // DQUOTE
-		i++;
-	}
-	result[i] = '\0';
-	return (result);
-}
+//	***

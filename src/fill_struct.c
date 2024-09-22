@@ -9,6 +9,7 @@ void	fill_struct(t_vars *vars, t_pipex *data)
 		count_operators(vars, vars->cur->type);
 		next_token(vars);
 	}
+	count_cmds(vars); // ***
 	data->cmd_count = vars->cmd_count;
 	init_struct(data, vars);
 	vars->cur = vars->head;
@@ -60,7 +61,6 @@ void	handle_words(t_vars *vars, t_pipex *data)
 	data->cmd_argv[i][j] = NULL;
 	i++;
 }
-//< Makefile cat | wc -w > outfile
 
 void	handle_operators(t_vars *vars, t_pipex *data)
 {
@@ -165,12 +165,39 @@ void	count_operators(t_vars *vars, int type)
 		vars->infile_count++;
 	else if (type == DGREAT)
 		vars->outfile_count++;
-	else if (type == PIPE)
-		vars->cmd_count++; //	vars is being counted not data
+	/* else if (type == PIPE) //	***
+		vars->cmd_count++; */ //	vars is being counted not data
 	else if (type == WORD)
 		vars->arg_count++;
 }
-
+//	***
+void	count_cmds(t_vars *vars)
+{
+	vars->cur = vars->head;
+	next_token(vars);
+	while (vars->cur->type != NEWLINE)
+	{
+		if ((is_redirect(vars)))
+		{
+			next_token(vars);
+			if (vars->cur->type != NEWLINE)
+				next_token(vars);
+		}
+		if (vars->cur->type == WORD)
+		{
+			vars->cmd_count++;
+			while (vars->cur->type != NEWLINE)
+			{
+				if (vars->cur->type == PIPE)
+					break;
+				next_token(vars);
+			}
+		}
+		if (vars->cur->type != NEWLINE)
+			next_token(vars);
+	}
+}
+//	***
 void	init_struct(t_pipex *data, t_vars *vars)
 {
 	(void)vars;

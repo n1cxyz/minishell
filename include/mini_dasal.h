@@ -20,6 +20,7 @@
 # include <stdint.h>
 # include <fcntl.h>
 # include <string.h>
+//# include <stdbool.h>
 # include "libft.h"
 
 #  define BUFFER_SIZE 4096
@@ -121,16 +122,15 @@ void		cmd_suffix(t_vars *vars);
 void		simple_cmd(t_vars *vars);
 void		pipeline(t_vars *vars);
 //			EXPANDING
-void		expand(t_vars *vars);
-void		find_names(t_vars *vars);
+void		expand(t_vars *vars, t_pipex *data);
+void		expand_env(t_vars *vars, t_pipex *data);
 char		*substr_replace(t_vars *vars, char *s1, int index);
 char		*substr_remove(t_vars *vars, char c);
 //			EXPAND UTILS
 char		*get_name(t_vars *vars, int i);
 int			get_name_index(t_vars *vars, char *name);
+char		*ft_getenv(t_pipex *data, char *name);
 void		remove_quotes(t_vars *vars);
-int			find_q1(t_vars *vars);
-int			find_q2(t_vars *vars);
 //			FILL STRUCT
 void		fill_struct(t_vars *vars, t_pipex *data);
 void		handle_words(t_vars *vars, t_pipex *data);
@@ -139,6 +139,7 @@ void		handle_input(t_vars *vars, t_pipex *data);
 void		handle_output(t_vars *vars, t_pipex *data);
 void		handle_output_append(t_vars *vars, t_pipex *data);
 void		count_operators(t_vars *vars, int type);
+void		count_cmds(t_vars *vars);
 //			UTILS
 void		syntax_error(t_vars *vars);
 void 		no_such_file(t_vars *vars);
