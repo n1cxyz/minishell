@@ -62,23 +62,14 @@ int	main(int ac, char **av)
 	}
 }
 /*	!!! not working
-	multiple in/out file ?
-	multiple here_doc ?
-	empty heredoc ?
 
-	whitespaces in quotes !
-	command count !
-	make getenv !
+""
+''
+"$abc"
+$$
+expansion in heredoc
 
-	!!!
-	"?HOMEa ?SHELL"
-	-?HOME?SHELL-
-	?
-	-?-
-	'?HOME'
-	-?HOME-
-	-?HOME?-
-	!!!
+	
 
 */
 //	TODO:
