@@ -10,17 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini_dasal.h"
+#include "mini.h"
 
 t_token	*new_token(char *content, int type)
 {
 	t_token	*new;
 
 	new = (t_token *)malloc(sizeof(t_token));
-	if (!new) {
-        perror("Failed to allocate memory");
-        exit(EXIT_FAILURE);
-    }
+	if (!new)
+	{
+		perror("Failed to allocate memory");
+		exit(EXIT_FAILURE);
+	}
 	new->content = content;
 	new->type = type;
 	new->next = NULL;
@@ -44,7 +45,7 @@ void	add_token(t_token **head, t_token *new)
 	temp->next = new;
 }
 
-void free_token(t_token *token)
+void	free_token(t_token *token)
 {
 	if (token != NULL)
 	{

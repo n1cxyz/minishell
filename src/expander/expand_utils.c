@@ -1,30 +1,66 @@
-#include "mini_dasal.h"
-//	***
-void	remove_quotes(t_vars *vars)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dasal <dasal@student.42berlin.de>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/01 10:26:27 by dasal             #+#    #+#             */
+/*   Updated: 2024/10/01 10:26:29 by dasal            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "mini.h"
+
+int	is_exit_code(t_vars *vars)
 {
-	char	*src = vars->cur->content;
-	char	*dst = vars->cur->content;
-	int		in_double_quotes = 0;
-	int		in_single_quotes = 0;
-	
-	while (*src != '\0')
+	char	*exitcode_str;
+
+	if (vars->cur->content[vars->j + 1] == '?' && (vars->j == 0
+			|| !ft_isalnum(vars->cur->content[vars->j - 1])))
 	{
-		if (*src == '-' && !in_single_quotes)
-		{
-			in_double_quotes ^= 1;
-			src++;
-			continue;
-		}
-		else if (*src == 39 && !in_double_quotes)
-		{
-			in_single_quotes ^= 1;
-			src++;
-			continue;
-		}
-		*dst = *src;
-		dst++;
-		src++;
+		exitcode_str = ft_itoa(vars->prev_exit_code);
+		vars->len += ft_strlcpy(vars->result + vars->len, exitcode_str, 
+				sizeof(vars->result) - vars->len);
+		vars->j += 2;
+		free (exitcode_str);
+		return (1);
 	}
-	*dst = '\0';
+	return (0);
 }
-//	***
+
+int	is_single(t_vars *vars)
+{
+	if ((vars->cur->content[vars->j + 1] == '\0') 
+		|| (!ft_isalnum(vars->cur->content[vars->j + 1]) 
+			&& vars->cur->content[vars->j + 1] != '_'))
+	{
+		vars->result[vars->len++] = vars->cur->content[vars->j++];
+		return (1);
+	}
+	return (0);
+}
+
+void	reset_vars(t_vars *vars)
+{
+	vars->len = 0;
+	vars->j = 0;
+	vars->sq = 0;
+	vars->dq = 0;
+}
+
+char	*ft_getenv(t_pipex *data, char *name)
+{
+	int	len;
+	int	i;
+
+	i = 0;
+	len = ft_strlen(name);
+	while (data->env[i])
+	{
+		if (strncmp(data->env[i], name, len) == 0 && data->env[i][len] == '=')
+			return (data->env[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}

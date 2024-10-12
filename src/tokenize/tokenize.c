@@ -10,25 +10,78 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini_dasal.h"
+#include "mini.h"
 
-void	tokenize(t_vars *vars, char *s)
+int	handle_and_or(t_vars *vars, const char *s, int i)
+{
+	if (s[i] == '&' && s[i + 1] == '&')
+	{
+		add_token(&vars->head, new_token(ft_substr("&&", 0, 2), AND));
+		vars->pipeline_count++;
+		vars->and_or[vars->k] = '&';
+		vars->k++;
+		i++;
+	}
+	else if (s[i] == '|' && s[i + 1] == '|')
+	{
+		add_token(&vars->head, new_token(ft_substr("||", 0, 2), OR));
+		vars->pipeline_count++;
+		vars->and_or[vars->k] = '|';
+		vars->k++;
+		i++;
+	}
+	else
+		return (i);
+	i++;
+	return (i);
+}
+
+int	handle_parent(t_vars *vars, const char *s, int i)
+{
+	if (s[i] == '(')
+	{
+		add_token(&vars->head, new_token(ft_substr(s, i, 1), PARENTL));
+		vars->parent_count++;
+	}
+	else if (s[i] == ')')
+	{
+		add_token(&vars->head, new_token(ft_substr(s, i, 1), PARENTR));
+		vars->parent_count--;
+		if (vars->parent_count < 0)
+			syntax_error(vars);
+	}
+	else
+		return (i);
+	i++;
+	return (i);
+}
+
+void	tokenize(t_vars *vars, const char *s)
 {
 	int	i;
 	int	type;
-	
+
 	i = 0;
 	while (s[i] != '\n' && s[i] != '\0')
 	{
 		type = get_char_type(s[i]);
 		while (get_char_type(s[i]) == SPACE)
 			i++;
-		if (type == '<' || type == '>' || type == '|')
+		if (s[i] == '(' || s[i] == ')')
+			i = handle_parent(vars, s, i);
+		else if ((s[i] == '&' && s[i + 1] == '&') || 
+			(s[i] == '|' && s[i + 1] == '|'))
+			i = handle_and_or(vars, s, i);
+		else if (type == '<' || type == '>' || type == '|')
 			i = handle_redirectors(vars, s, i, type);
 		else if (type == GENERAL || type == SQUOTE || type == DQUOTE || 
-		type == NAME)
+			type == NAME)
 			i = handle_word(vars, s, i, type);
 	}
+	vars->and_or[vars->k] = '\0';
+	vars->pipeline_count = vars->k;
+	if (vars->parent_count != 0)
+		syntax_error(vars);
 	add_token(&vars->head, new_token(NULL, NEWLINE));
 }
 
@@ -51,24 +104,25 @@ int	get_char_type(int c)
 	else if ((c >= 8 && c <= 13) || (c == 32))
 		return (SPACE);
 	else if (c == NAME)
-		return (NAME); // $
+		return (NAME);
 	else 
 		return (GENERAL);
 }
- 
-void	word_to_filename(t_token *head)
+
+int	handle_redirectors(t_vars *vars, const char *s, int i, int type)
 {
-	while (head)
+	if ((type == '<') && (type == get_char_type(s[i + 1])))
 	{
-		if (head->type == LESS || head->type == GREAT || 
-		head->type == DGREAT || head->type == DLESS) // ?
-		{
-			if (head->next)
-			{
-				if (head->next->type == WORD)
-					head->next->type = FILENAME;
-			}
-		}
-		head = head->next;
+		add_token(&vars->head, new_token(ft_substr("<<", 0, 2), DLESS));
+		i++;
 	}
+	else if ((type == '>') && (type == get_char_type(s[i + 1])))
+	{
+		add_token(&vars->head, new_token(ft_substr(">>", 0, 2), DGREAT));
+		i++;
+	}
+	else
+		add_token(&vars->head, new_token(ft_substr(s, i, 1), type));
+	i++;
+	return (i);
 }

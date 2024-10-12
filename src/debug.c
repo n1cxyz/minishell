@@ -3,33 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dasal <dasal@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: sevo <sevo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:38:26 by dasal             #+#    #+#             */
-/*   Updated: 2024/09/06 11:38:27 by dasal            ###   ########.fr       */
+/*   Updated: 2024/10/03 10:56:45 by sevo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini_dasal.h"
-/* 
-enum tokentype {
-	NEWLINE = '\n',
-	LESS = '<',
-	GREAT = '>',
-	PIPE = '|',
-	SQUOTE = 39,
-	DQUOTE = 34,
-	DLESS = 256,
-	DGREAT = 257,
-	GENERAL, 
-	SPACE,
-	WORD,
-	NAME,
-	Empty,
-	FILENAME,
-	END
-}; */
-
+#include "mini.h"
+/* void	print_token_list(t_token *head)
+{
+	while (head)
+	{
+		print_token(head);
+		head = head->next;
+	}
+}
 
 void	print_token(t_token *token)
 {
@@ -67,6 +56,14 @@ void	print_token(t_token *token)
 		printf("type: FILENAME\n");
 	else if (token->type == END)
 		printf("type: END\n");
+	else if (token->type == AND)
+		printf("type: AND\n");
+	else if (token->type == OR)
+		printf("type: OR\n");
+	else if (token->type == PARENTL)
+		printf("type: PARENTL\n");
+	else if (token->type == PARENTR)
+		printf("type: PARENTR\n");
 	else
 		printf("type: %c\n", token->type);
 	if (!(token->next))
@@ -103,65 +100,74 @@ void	print_token(t_token *token)
 			printf("type: FILENAME\n");
 		else if (token->next->type == END)
 			printf("type: END\n");
+		else if (token->next->type == AND)
+			printf("type: AND\n");
+		else if (token->next->type == OR)
+			printf("type: OR\n");
+		else if (token->next->type == PARENTL)
+			printf("type: PARENTL\n");
+		else if (token->next->type == PARENTR)
+			printf("type: PARENTR\n");
 		else
 			printf("next: %d\n", token->next->type);
 	}	
 	printf("\n");
-}
+} */
 
-void	check_invalid_syntax(t_vars *vars, char c)
-{
-	if ((c >= 1 && c <= 8) || (c >= 11 && c <= 31) || (c == '!') || (c == '#'))
-	{
-		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
-		ft_putchar_fd(c, STDERR_FILENO);
-		ft_putchar_fd('\'', STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		free_token(vars->head);
-        exit(EXIT_FAILURE);
-	}
-	if ((c >= 37 && c <= 38) || (c >= 40 && c <= 44) || (c >= 46 && c <= 47))
-	{
-		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
-		ft_putchar_fd(c, STDERR_FILENO);
-		ft_putchar_fd('\'', STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		free_token(vars->head);
-        exit(EXIT_FAILURE);
-	}
-	if ((c >= 58 && c <= 59) || (c == '=') || (c == '@') || (c >= 91 && c <= 96))
-	{
-		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
-		ft_putchar_fd(c, STDERR_FILENO);
-		ft_putchar_fd('\'', STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		free_token(vars->head);
-        exit(EXIT_FAILURE);
-	}
-	if ((c >= 125 && c <= 126) || (c == '{'))
-	{
-		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
-		ft_putchar_fd(c, STDERR_FILENO);
-		ft_putchar_fd('\'', STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		free_token(vars->head);
-        exit(EXIT_FAILURE);
-	}
-}
+// void	check_invalid_syntax(t_vars *vars, char c)
+// {
+// 	if ((c >= 1 && c <= 8) || (c >= 11 && c <= 31) || (c == '!') || (c == '#'))
+// 	{
+// 		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
+// 		ft_putchar_fd(c, STDERR_FILENO);
+// 		ft_putchar_fd('\'', STDERR_FILENO);
+// 		ft_putchar_fd('\n', STDERR_FILENO);
+// 		free_token(vars->head);
+//         exit(EXIT_FAILURE);
+// 	}
+// 	if ((c >= 37 && c <= 38) || (c >= 40 && c <= 44) || (c >= 46 && c <= 47))
+// 	{
+// 		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
+// 		ft_putchar_fd(c, STDERR_FILENO);
+// 		ft_putchar_fd('\'', STDERR_FILENO);
+// 		ft_putchar_fd('\n', STDERR_FILENO);
+// 		free_token(vars->head);
+//         exit(EXIT_FAILURE);
+// 	}
+// 	if ((c >= 58 && c <= 59) || (c == '=') || (c == '@') 
+//	|| (c >= 91 && c <= 96))
+// 	{
+// 		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
+// 		ft_putchar_fd(c, STDERR_FILENO);
+// 		ft_putchar_fd('\'', STDERR_FILENO);
+// 		ft_putchar_fd('\n', STDERR_FILENO);
+// 		free_token(vars->head);
+//         exit(EXIT_FAILURE);
+// 	}
+// 	if ((c >= 125 && c <= 126) || (c == '{'))
+// 	{
+// 		ft_putstr_fd("invalid syntax: '", STDERR_FILENO);
+// 		ft_putchar_fd(c, STDERR_FILENO);
+// 		ft_putchar_fd('\'', STDERR_FILENO);
+// 		ft_putchar_fd('\n', STDERR_FILENO);
+// 		free_token(vars->head);
+//         exit(EXIT_FAILURE);
+// 	}
+// }
 
-//		!! leaks memory
-void	print_token_list(t_token *head)
-{
-	while (head)
-	{
-		print_token(head);
-		head = head->next;
-	}
-}
+// //		!! leaks memory
+// void	print_token_list(t_token *head)
+// {
+// 	while (head)
+// 	{
+// 		print_token(head);
+// 		head = head->next;
+// 	}
+// }
 
-void	print_struct(t_pipex *data)
+/* void	print_struct(t_pipex *data)
 {
-	if (data->here_doc)
+	if (data->here_doc == true)
 		printf("here_doc: true\n");
 	else
 		printf("here_doc: false\n");
@@ -178,7 +184,9 @@ void	print_struct(t_pipex *data)
 	{
 		for (int i = 0; i < data->cmd_count; i++)
 		{
-			if (data->cmd[i])
+			if (data->cmd[i][0] == '\0')
+				printf("cmd: '0'\n");
+			else if (data->cmd[i])
 				printf("cmd: %s\n", data->cmd[i]);
 			else
 				printf("cmd[i]: NULL\n");
@@ -190,12 +198,22 @@ void	print_struct(t_pipex *data)
 	{
 		for (int i = 0; i < data->cmd_count; i++)
 		{
-			for (int j = 0; data->cmd_argv[i][j]; j++)
+			for (int j = 0; j < 5; j++) //data->cmd_argv[i][j]
 			{
+				if (data->cmd_argv[i][j])
+				{
+					if (data->cmd_argv[i][j][0] == '\0')
+					{
+						printf("cmd_argv[%d][%d] = '0'\n", i, j, data->cmd_argv[i][j]);
+						continue;
+					}
+				}
 				if (data->cmd_argv[i][j])
 					printf("cmd_argv[%d][%d] = %s\n", i, j, data->cmd_argv[i][j]);
 				else
-					printf("cmd_argv[i][j]: NULL\n");
+					printf("cmd_argv[%d][%d] = NULL\n", i, j);
+				if (data->cmd_argv[i][j] == NULL)
+					break ;
 			}
 		}
 	}
@@ -209,5 +227,5 @@ void	print_struct(t_pipex *data)
 		printf("file_out: %s\n", data->file_out);
 	else
 		printf("file_out: NULL\n");
-	//printf("%d\n", data->exit_code);	
-}
+	printf("%d\n", data->exit_code);	
+} */

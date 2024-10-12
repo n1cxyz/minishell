@@ -3,23 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dasal <dasal@student.42berlin.de>          +#+  +:+       +#+        */
+/*   By: wlucke <wlucke@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 12:16:42 by dasal             #+#    #+#             */
-/*   Updated: 2024/09/13 12:16:43 by dasal            ###   ########.fr       */
+/*   Updated: 2024/09/25 10:59:59 by wlucke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini_dasal.h"
+#include "mini.h"
 
-void	expand(t_vars *vars, t_pipex *data) //	***
+void	expand(t_vars *vars, t_pipex *data)
 {
 	vars->cur = vars->head;
 	next_token(vars);
 	while (vars->cur->type != NEWLINE)
 	{
 		if (vars->cur->type == WORD && vars->cur->content != NULL)
-			expand_env(vars, data); //	***
+		{
+			expand_search(vars, data);
+			wildcard(vars);
+		}
 		next_token(vars);
 	}
 	vars->cur = vars->head;
@@ -27,83 +30,82 @@ void	expand(t_vars *vars, t_pipex *data) //	***
 	while (vars->cur->type != NEWLINE)
 	{
 		if (vars->cur->type == WORD)
+		{
+			reset_vars(vars);
+			space_to_7(vars);
+			reset_vars(vars);
 			remove_quotes(vars);
+			empty_string(vars);
+		}
 		next_token(vars);
 	}
 }
-//	***
-void		expand_env(t_vars *vars, t_pipex *data)
+
+void	space_to_7(t_vars *vars)
 {
-	char			result[1024] = {0};
-	unsigned int	result_len = 0;
-	int				in_single_quotes = 0;
-	int				i = 0;
-	
-	while (vars->cur->content[i] != '\0')
+	char	*src;
+	char	*dst;
+
+	src = vars->cur->content;
+	dst = vars->cur->content;
+	while (*src != '\0')
 	{
-		if (vars->cur->content[i] == 39)
+		if ((is_space(*src)) && (vars->dq || vars->sq))
 		{
-			in_single_quotes = !in_single_quotes;
-			result[result_len++] = vars->cur->content[i++];
+			*src = 7;
 		}
-		else if (vars->cur->content[i] == '?' && !in_single_quotes)
+		if (*src == 34 && !vars->sq)
 		{
-			 if (vars->cur->content[i + 1] == '?' && (i == 0 || !ft_isalnum(vars->cur->content[i - 1])))
-			 {
-				char *exitcode_str = ft_itoa(vars->exit_code);
-				result_len += ft_strlcpy(result + result_len, exitcode_str, sizeof(result) - result_len);
-				i += 2;
-				free (exitcode_str);
-				continue;
-			}
-			if ((vars->cur->content[i + 1] == '\0') || (!ft_isalnum(vars->cur->content[i + 1]) && vars->cur->content[i+1] != '_'))
-			{
-				result[result_len++] = vars->cur->content[i++];
-				continue;
-			}
-			i++;
-			char var_name[256] = {0};
-			int var_len = 0;
-			
-			while (vars->cur->content[i] != '\0' && (ft_isalnum(vars->cur->content[i]) || vars->cur->content[i] == '_'))
-				var_name[var_len++] = vars->cur->content[i++];
-			var_name[var_len] = '\0';
-			
-			char *var_value = ft_getenv(data, var_name);
-			
-			if (var_value)
-			{
-				ft_strlcpy(result + result_len, var_value, sizeof(result) - result_len - 1);
-				result_len += ft_strlen(var_value);
-			}
-        }
-		else
-			result[result_len++] = vars->cur->content[i++];
-		if (result_len >= sizeof(result) - 1)
-			break;
+			vars->dq ^= 1;
+		}
+		else if (*src == 39 && !vars->dq)
+		{
+			vars->sq ^= 1;
+		}
+		*dst = *src;
+		dst++;
+		src++;
 	}
-	
-	result[result_len] = '\0';
-	
-	free(vars->cur->content);
-	vars->cur->content = malloc(result_len + 1);
-	if (vars->cur->content)
-		ft_strlcpy(vars->cur->content, result, result_len + 1);
+	*dst = '\0';
 }
 
-char	*ft_getenv(t_pipex *data, char *name)
+void	remove_quotes(t_vars *vars)
 {
-	int	len;
-	int	i;
+	char	*src;
+	char	*dst;
 
-	i = 0;
-	len = ft_strlen(name);
-	while (data->env[i])
+	src = vars->cur->content;
+	dst = vars->cur->content;
+	while (*src != '\0')
 	{
-		if (strncmp(data->env[i], name, len) == 0 && data->env[i][len] == '=')
-		 	return (data->env[i] + len + 1);
-		i++;
+		if (*src == 34 && !vars->sq)
+		{
+			vars->dq ^= 1;
+			src++;
+			continue ;
+		}
+		else if (*src == 39 && !vars->dq)
+		{
+			vars->sq ^= 1;
+			src++;
+			continue ;
+		}
+		*dst = *src;
+		dst++;
+		src++;
 	}
-	return NULL;
+	*dst = '\0';
 }
-//	***
+
+void	empty_string(t_vars *vars)
+{
+	if (vars->cur->content[0] == '\0')
+	{
+		free (vars->cur->content);
+		vars->cur->content = (char *)malloc(sizeof(char) * 2);
+		if (!vars->cur->content)
+			perror("memory allocation failed");
+		vars->cur->content[0] = 7;
+		vars->cur->content[1] = '\0';
+	}
+}
